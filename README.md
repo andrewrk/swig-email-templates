@@ -22,12 +22,17 @@ var options = {
   root: path.join(__dirname, "templates"),
   // any other swig options allowed here
 };
-emailTemplates(options, function(err, render) {
+emailTemplates(options, function(err, render, generateDummy) {
   var context = {
     meatballCount: 9001,
   };
   render('meatball-sandwich', context, function(err, html) {
     // send html email
+  });
+  generateDummy('meatball-sandwhich', function(err, dummyContext) {
+    // dummyContext contains a context you can send to render, prepopulated
+    // with dummy values. you can use this if you're building an email
+    // preview tool.
   });
 });
 ```
