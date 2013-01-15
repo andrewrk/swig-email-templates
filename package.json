@@ -1,0 +1,23 @@
+{
+  "name": "swig-email-templates",
+  "version": "0.0.0",
+  "description": "Node.js module for rendering beautiful emails with swig templates and email-friendly inline CSS using boost.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/superjoe30/swig-email-templates.git"
+  },
+  "author": "Andrew Kelley",
+  "license": "BSD",
+  "devDependencies": {
+    "mocha": "~1.8.1",
+    "batch": "~0.2.1"
+  },
+  "dependencies": {
+    "swig": "~0.13.4",
+    "boost": "0.0.2"
+  }
+}

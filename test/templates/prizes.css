@@ -1,0 +1,16 @@
+#prize-list{
+  font-size:12px;
+  padding-top:-3px;
+  color:white;
+}
+.prize-item{
+  padding-top:4px;
+  padding-bottom:4px;
+  font-size:12px;
+}
+.prize-item-bull{
+  padding-top:4px;
+  padding-bottom:4px;
+  font-size:12px;
+  padding-left:12px;
+}

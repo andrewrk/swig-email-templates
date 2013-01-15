@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>{{ subject }}</title>
+
+    <style>
+      body {
+        color: black;
+      }
+      a {
+        text-decoration: underline;
+      }
+    </style>
+    {% block head %}
+    <link rel="stylesheet" href="base.css">
+    {% endblock %}
+  </head>
+  <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
+    <center>
+      <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="backgroundTable">
+        <tr>
+          <td align="center" valign="top">
+            <table border="0" cellpadding="0" cellspacing="0" width="600" id="templateContainer">
+              <tr>
+                <td align="center" valign="top">
+                  <table border="0" cellpadding="0" cellspacing="0" width="600" id="templateHeader">
+                    <tr>
+                      <td>
+                        <a href="http://indabamusic.com">
+                          <img src="https://opps-notify.s3.amazonaws.com/email-indaba-logo-header.png" alt="Indaba Music" border="0" width="600" style="display: block; ">
+                        </a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="headerContent">
+                        <img src="https://opps-notify.s3.amazonaws.com/opportunity-email-header-default.jpg" width="600">
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td align="center" valign="top">
+                  {% block content %}
+                  {% endblock %}
+                </td>
+              </tr>
+              <tr>
+                <td align="center" valign="top">
+                  <!-- // Begin Template Footer \\ -->
+                  <table border="0" cellpadding="0" cellspacing="0" width="600" id="templateFooter">
+                    <tr>
+                      <td valign="top" class="footerContent">
+
+                        <!-- // Begin Module: Standard Footer \\ -->
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                          <tr>
+                            <td colspan="2" valign="left" id="info">
+                              <div>
+                                You are receiving this email as a registered member of
+                                Indaba Music.
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colspan="2" valign="left" id="utility">
+                              <div>
+                                <a href="{{ emailPreferencesUrl }}">Email Preferences</a>&nbsp;
+                              </div>
+                            </td>
+
+                          </tr>
+                          <tr>
+                            <td colspan="3" valign="left" id="info">
+                              <div style="font-size: 10px">
+                                Indaba Music	568 Broadway New York, NY 10012 |
+                                <a href="http://www.indabamusic.com/corporate/privacy">Privacy Policy</a> |
+                                <a href="http://www.indabamusic.com/about">About Us</a>
+                              </div>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+            <br>
+          </td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>
