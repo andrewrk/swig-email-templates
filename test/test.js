@@ -46,6 +46,13 @@ var testMap = {
     foo: "foo",
     derp: "derp",
   },
+  "comments": {
+    twenty: "twenty",
+    ten: "ten",
+    eleven: "eleven",
+    baseOne: "baseOne",
+    baseTwo: "baseTwo",
+  },
 };
 
 describe("createDummyContext", function() {

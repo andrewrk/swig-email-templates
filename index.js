@@ -80,6 +80,14 @@ function iterate(token, addVar) {
   var tokens = token.tokens;
   if (tokens) tokens.forEach(onChild);
 
+  var blocks = token.blocks;
+  var blockName;
+  if (blocks) {
+    for (blockName in blocks) {
+      onChild(blocks[blockName]);
+    }
+  }
+
   function onChild(child) {
     var type = child.type;
     var addVarException;
