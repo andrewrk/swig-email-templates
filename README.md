@@ -31,7 +31,7 @@ emailTemplates(options, function(err, render, generateDummy) {
   render('meatball-sandwich', context, function(err, html) {
     // send html email
   });
-  generateDummy('meatball-sandwhich', function(err, dummyContext) {
+  generateDummy('meatball-sandwich', function(err, dummyContext) {
     // dummyContext contains a context you can send to render, prepopulated
     // with dummy values. you can use this if you're building an email
     // preview tool.
