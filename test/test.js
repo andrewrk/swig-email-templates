@@ -21,7 +21,8 @@ var testMap = {
   "for_loop": {
     scalar: "scalar",
     scalar2: "scalar2",
-    xyz: [ "xyz" ],
+    xyz: [ "abcd" ],
+    lalala: "lalala",
   },
   "plays": {
     subject: "subject",
@@ -35,6 +36,15 @@ var testMap = {
     userName: "userName",
     opportunityListenUrl: "opportunityListenUrl",
     submissionStatsUrl: "submissionStatsUrl",
+  },
+  "if_statement": {
+    one: "one",
+    two: "two",
+    three: "three",
+    four: "four",
+    five: "five",
+    foo: "foo",
+    derp: "derp",
   },
 };
 

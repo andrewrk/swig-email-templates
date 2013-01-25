@@ -63,7 +63,8 @@ function extend(obj, src) {
 }
 
 var VAR_TOKEN = 2;
-var FOR_TOKEN = 1;
+var CONTROL_TOKEN = 1;
+var varRegex = /^[a-zA-Z_]/;
 
 function createDummyContext(swigTemplate) {
   var results = {};
@@ -81,12 +82,29 @@ function iterate(token, addVar) {
 
   function onChild(child) {
     var type = child.type;
+    var addVarException;
     if (type === VAR_TOKEN) {
       addVar(child.name, child.name);
-    } else if (child.name === 'for' && type === FOR_TOKEN) {
-      addVar(child.args[2], [child.args[2]]);
+    } else if (child.name === 'for' && type === CONTROL_TOKEN) {
+      addVarException = child.args[0];
+      addVar(child.args[2], [addVarException]);
+      iterate(child, addVarWithException);
+    } else if (child.name === 'if' && type === CONTROL_TOKEN) {
+      child.args.forEach(addIfVar);
+      iterate(child, addVar);
     } else {
       iterate(child, addVar);
     }
+
+    function addVarWithException(name, value) {
+      if (name !== addVarException) addVar(name, value);
+    }
+
+    function addIfVar(token) {
+      if (varRegex.test(token)) {
+        addVar(token, token);
+      }
+    }
   }
 }
+
