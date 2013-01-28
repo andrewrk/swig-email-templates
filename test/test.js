@@ -53,6 +53,35 @@ var testMap = {
     baseOne: "baseOne",
     baseTwo: "baseTwo",
   },
+  "complex_variable": {
+    scalar: "scalar",
+    one: {
+      two: {
+        three: "three",
+        four: "four",
+      },
+      five: {
+        four: "four",
+      },
+      six: "six",
+    },
+    foo: {
+      bar: "bar",
+      arr: [{
+        prop: [{
+          prop2: "prop2",
+        }],
+      }],
+    },
+    xyz: [[
+      {
+        one: "one",
+        two: "two",
+      },
+    ]],
+    lalala: "lalala",
+    la2: "la2",
+  },
 };
 
 describe("createDummyContext", function() {

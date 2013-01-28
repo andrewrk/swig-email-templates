@@ -1,0 +1,19 @@
+{{ scalar }}
+{{ one.two.three }}
+{{ one.two.four }}
+{{ one.five.four }}
+{{ one.six }}
+{{ foo.bar }}
+{% for abcd in xyz %}
+  {% for baz in abcd %}
+    {{ baz.one }}
+    {{ baz.two }}
+    {{ la2 }}
+  {% endfor %}
+  {{ lalala }}
+{% endfor %}
+{% for it in foo.arr %}
+  {% for it2 in it.prop %}
+    {{ it2.prop2 }}
+  {% endfor %}
+{% endfor %}

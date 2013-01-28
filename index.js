@@ -72,8 +72,23 @@ function createDummyContext(swigTemplate) {
   return results;
 
   function addVar(name, value) {
-    results[name] = value;
+    results[name] = merge(results[name], value);
   }
+}
+
+function merge(original, value) {
+  if (original == null) return value;
+  if (typeof original === 'string') return value;
+  if (Array.isArray(original)) return original;
+  if (typeof original === 'object') {
+    if (typeof value === 'object') {
+      for (var prop in value) {
+        original[prop] = merge(original[prop], value[prop]);
+      }
+    }
+    return original;
+  }
+  return value;
 }
 
 function iterate(token, addVar) {
@@ -90,13 +105,10 @@ function iterate(token, addVar) {
 
   function onChild(child) {
     var type = child.type;
-    var addVarException;
     if (type === VAR_TOKEN) {
-      addVar(child.name, child.name);
+      splitAndAddVar(child.name);
     } else if (child.name === 'for' && type === CONTROL_TOKEN) {
-      addVarException = child.args[0];
-      addVar(child.args[2], [addVarException]);
-      iterate(child, addVarWithException);
+      addForVar();
     } else if (child.name === 'if' && type === CONTROL_TOKEN) {
       child.args.forEach(addIfVar);
       iterate(child, addVar);
@@ -104,8 +116,20 @@ function iterate(token, addVar) {
       iterate(child, addVar);
     }
 
-    function addVarWithException(name, value) {
-      if (name !== addVarException) addVar(name, value);
+    function addForVar() {
+      var iteratorName = child.args[0];
+      var arrayName = child.args[2];
+      var array = [iteratorName];
+      splitAndAddVar(arrayName, array);
+      iterate(child, newAddVar);
+
+      function newAddVar(name, value) {
+        if (name === iteratorName) {
+          array[0] = merge(array[0], value);
+        } else {
+          addVar(name, value);
+        }
+      }
     }
 
     function addIfVar(token) {
@@ -113,6 +137,18 @@ function iterate(token, addVar) {
         addVar(token, token);
       }
     }
+
+    function splitAndAddVar(name, value) {
+      var parts = name.split('.');
+      value = value || parts[parts.length - 1];
+      var root = parts.shift();
+      var obj, part;
+      while (part = parts.pop()) {
+        obj = {};
+        obj[part] = value;
+        value = obj;
+      }
+      addVar(root, value);
+    }
   }
 }
-
