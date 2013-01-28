@@ -1,6 +1,6 @@
 {
   "name": "swig-email-templates",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Node.js module for rendering beautiful emails with swig templates and email-friendly inline CSS using boost.",
   "main": "index.js",
   "scripts": {
