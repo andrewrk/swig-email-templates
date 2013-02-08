@@ -1,5 +1,5 @@
 var swig = require("swig")
-  , boostContent = require("boost").boostContent
+  , juiceContent = require("juice").juiceContent
   , path = require("path")
   , createDummyContext = require('swig-dummy-context')
 
@@ -32,7 +32,8 @@ function init(options, cb) {
       renderTemplate(template, context, function(err, html) {
         if (err) return cb(err);
         // validate html and inline all css
-        boostContent(html, path.join(options.root, templateName), function(err, html) {
+        var fileUrl = "file://" + path.resolve(process.cwd(), path.join(options.root, templateName));
+        juiceContent(html, { url: fileUrl }, function(err, html) {
           if (err) return cb(err);
           cb(null, html);
         });

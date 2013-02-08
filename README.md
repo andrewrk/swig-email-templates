@@ -1,7 +1,7 @@
 # swig-email-templates
 
 Node.js module for rendering beautiful emails with swig templates and
-email-friendly inline CSS using [boost](https://github.com/superjoe30/boost).
+email-friendly inline CSS using [juice](https://github.com/LearnBoost/juice).
 
 Inspired by [niftylettuce/node-email-templates](https://github.com/niftylettuce/node-email-templates).
 
@@ -9,7 +9,7 @@ Inspired by [niftylettuce/node-email-templates](https://github.com/niftylettuce/
 
  * Uses [swig](https://github.com/paularmstrong/swig/), which supports
    [Django-inspired template inheritance](https://docs.djangoproject.com/en/dev/topics/templates/#template-inheritance).
- * Uses [boost](https://github.com/superjoe30/boost), which takes an HTML
+ * Uses [juice](https://github.com/LearnBoost/juice), which takes an HTML
    file and inlines all the `<link rel="stylesheet">`s and the `<style>`s.
  * Uses [swig-dummy-context](https://github.com/superjoe30/swig-dummy-context)
    which gives you the ability to generate dummy context from a template to

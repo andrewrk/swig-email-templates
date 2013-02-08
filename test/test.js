@@ -133,7 +133,7 @@ describe("swig-email-templates", function() {
       });
       batch.end(function(err, results) {
         if (err) return cb(err);
-        assert.strictEqual(results[0], results[1].trim());
+        assert.strictEqual(results[0].trim(), results[1].trim());
         cb();
       });
     };

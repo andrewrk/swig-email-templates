@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "swig": "~0.13.4",
-    "boost": "0.0.2",
-    "swig-dummy-context": "0.0.1"
+    "swig-dummy-context": "0.0.1",
+    "juice": "~0.1.0"
   }
 }
