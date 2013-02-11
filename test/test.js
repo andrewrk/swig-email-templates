@@ -84,24 +84,14 @@ var testMap = {
   },
 };
 
-describe("createDummyContext", function() {
-  for (var templateName in testMap) {
-    it(templateName, createIt(templateName, testMap[templateName]));
-  }
-  
-  function createIt(templateName, expected) {
-    return function() {
-      var template = swig.compileFile(templateName + ".html");
-      assert.deepEqual(createDummyContext(template), expected);
-    };
-  }
-});
-
 describe("swig-email-templates", function() {
   var render, dummyContext;
   before(function(cb) {
     var options = {
       root: path.join(__dirname, "templates"),
+      urlRewriteFn: function(urlString) {
+        return urlString + "-append";
+      },
     };
     emailTemplates(options, function(err, renderFn, dummyContextFn) {
       if (err) {

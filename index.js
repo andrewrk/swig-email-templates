@@ -35,31 +35,22 @@ function init(options, cb) {
         if (err) return cb(err);
         createJsDomInstance(html, function(err, document) {
           if (err) return cb(err);
-          if (options.urlRewriteFn) {
-            rewriteUrls(document, options.urlRewriteFn, function(err) {
-              if (err) return cb(err);
-              commenceJuicing();
-            });
-          } else {
-            commenceJuicing();
-          }
-          function commenceJuicing() {
-            var fileUrl = "file://" + path.resolve(process.cwd(), path.join(options.root, templateName));
-            juiceDocument(document, { url: fileUrl }, function(err) {
-              if (err) {
-                // free the associated memory
-                // with lazily created parentWindow
-                try {
-                  document.parentWindow.close();
-                } catch (cleanupErr) {}
-                cb(err);
-              } else {
-                var inner = document.innerHTML;
+          if (options.urlRewriteFn) rewriteUrls(document, options.urlRewriteFn);
+          var fileUrl = "file://" + path.resolve(process.cwd(), path.join(options.root, templateName));
+          juiceDocument(document, { url: fileUrl }, function(err) {
+            if (err) {
+              // free the associated memory
+              // with lazily created parentWindow
+              try {
                 document.parentWindow.close();
-                cb(null, inner);
-              }
-            });
-          }
+              } catch (cleanupErr) {}
+              cb(err);
+            } else {
+              var inner = document.innerHTML;
+              document.parentWindow.close();
+              cb(null, inner);
+            }
+          });
         });
       });
     });
