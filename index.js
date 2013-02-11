@@ -11,7 +11,7 @@ function init(options, cb) {
   options = extend({
     root: path.join(__dirname, "templates"),
     allowErrors: true,
-    urlRewriteFn: function(urlString) { return urlString; },
+    urlRewriteFn: null,
   }, options || {});
   swig.init(options);
 
@@ -35,24 +35,48 @@ function init(options, cb) {
         if (err) return cb(err);
         createJsDomInstance(html, function(err, document) {
           if (err) return cb(err);
-          var fileUrl = "file://" + path.resolve(process.cwd(), path.join(options.root, templateName));
-          juiceDocument(document, { url: fileUrl }, function(err) {
-            if (err) {
-              // free the associated memory
-              // with lazily created parentWindow
-              try {
+          if (options.urlRewriteFn) {
+            rewriteUrls(document, options.urlRewriteFn, function(err) {
+              if (err) return cb(err);
+              commenceJuicing();
+            });
+          } else {
+            commenceJuicing();
+          }
+          function commenceJuicing() {
+            var fileUrl = "file://" + path.resolve(process.cwd(), path.join(options.root, templateName));
+            juiceDocument(document, { url: fileUrl }, function(err) {
+              if (err) {
+                // free the associated memory
+                // with lazily created parentWindow
+                try {
+                  document.parentWindow.close();
+                } catch (cleanupErr) {}
+                cb(err);
+              } else {
+                var inner = document.innerHTML;
                 document.parentWindow.close();
-              } catch (cleanupErr) {}
-              cb(err);
-            } else {
-              var inner = document.innerHTML;
-              document.parentWindow.close();
-              cb(null, inner);
-            }
-          });
+                cb(null, inner);
+              }
+            });
+          }
         });
       });
     });
+  }
+}
+
+function rewriteUrls(document, rewrite, cb) {
+  var anchorList = document.getElementsByTagName("a");
+  for (var i = 0; i < anchorList.length; ++i) {
+    var anchor = anchorList[i];
+    for (var j = 0; j < anchor.attributes.length; ++j) {
+      var attr = anchor.attributes[j];
+      if (attr.name.toLowerCase() === 'href') {
+        anchor.setAttribute(attr.name, rewrite(attr.value));
+        break;
+      }
+    }
   }
 }
 
