@@ -14,6 +14,8 @@ Inspired by [niftylettuce/node-email-templates](https://github.com/niftylettuce/
  * Uses [swig-dummy-context](https://github.com/superjoe30/swig-dummy-context)
    which gives you the ability to generate dummy context from a template to
    aid in an email preview tool.
+ * URL rewrite support - you can provide a `urlRewriteFn` argument to rewrite
+   your links.
 
 ## Usage
 
