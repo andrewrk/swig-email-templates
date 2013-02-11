@@ -1,6 +1,7 @@
 var swig = require("swig")
-  , juiceContent = require("juice").juiceContent
+  , juiceDocument = require("juice").juiceDocument
   , path = require("path")
+  , jsdom = require("jsdom")
   , createDummyContext = require('swig-dummy-context')
 
 module.exports = init;
@@ -10,6 +11,7 @@ function init(options, cb) {
   options = extend({
     root: path.join(__dirname, "templates"),
     allowErrors: true,
+    urlRewriteFn: function(urlString) { return urlString; },
   }, options || {});
   swig.init(options);
 
@@ -31,14 +33,45 @@ function init(options, cb) {
       // render template with context
       renderTemplate(template, context, function(err, html) {
         if (err) return cb(err);
-        // validate html and inline all css
-        var fileUrl = "file://" + path.resolve(process.cwd(), path.join(options.root, templateName));
-        juiceContent(html, { url: fileUrl }, function(err, html) {
+        createJsDomInstance(html, function(err, document) {
           if (err) return cb(err);
-          cb(null, html);
+          var fileUrl = "file://" + path.resolve(process.cwd(), path.join(options.root, templateName));
+          juiceDocument(document, { url: fileUrl }, function(err) {
+            if (err) {
+              // free the associated memory
+              // with lazily created parentWindow
+              try {
+                document.parentWindow.close();
+              } catch (cleanupErr) {}
+              cb(err);
+            } else {
+              var inner = document.innerHTML;
+              document.parentWindow.close();
+              cb(null, inner);
+            }
+          });
         });
       });
     });
+  }
+}
+
+function createJsDomInstance(content, cb) {
+  // hack to force jsdom to see this argument as html content, not a url
+  // or a filename. https://github.com/tmpvar/jsdom/issues/554
+  var html = content + "\n";
+  var options = {
+    features: {
+      QuerySelector: ['1.0'],
+      FetchExternalResources: false,
+      ProcessExternalResources: false,
+      MutationEvents: false,
+    },
+  };
+  try {
+    cb(null, jsdom.html(html, null, options));
+  } catch (err) {
+    cb(err);
   }
 }
 
