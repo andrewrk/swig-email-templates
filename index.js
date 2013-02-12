@@ -11,7 +11,6 @@ function init(options, cb) {
   options = extend({
     root: path.join(__dirname, "templates"),
     allowErrors: true,
-    urlRewriteFn: null,
   }, options || {});
   swig.init(options);
 
@@ -26,7 +25,11 @@ function init(options, cb) {
     });
   }
     
-  function render(templateName, context, cb) {
+  function render(templateName, context, urlRewriteFn, cb) {
+    if (! cb) {
+      cb = urlRewriteFn;
+      urlRewriteFn = null;
+    }
     // compile file into swig template
     compileTemplate(templateName, function(err, template) {
       if (err) return cb(err);
@@ -35,7 +38,7 @@ function init(options, cb) {
         if (err) return cb(err);
         createJsDomInstance(html, function(err, document) {
           if (err) return cb(err);
-          if (options.urlRewriteFn) rewriteUrls(document, options.urlRewriteFn);
+          if (urlRewriteFn) rewriteUrls(document, urlRewriteFn);
           var fileUrl = "file://" + path.resolve(process.cwd(), path.join(options.root, templateName));
           juiceDocument(document, { url: fileUrl }, function(err) {
             if (err) {

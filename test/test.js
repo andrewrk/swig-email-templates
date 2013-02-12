@@ -89,9 +89,6 @@ describe("swig-email-templates", function() {
   before(function(cb) {
     var options = {
       root: path.join(__dirname, "templates"),
-      urlRewriteFn: function(urlString) {
-        return urlString + "-append";
-      },
     };
     emailTemplates(options, function(err, renderFn, dummyContextFn) {
       if (err) {
@@ -114,7 +111,7 @@ describe("swig-email-templates", function() {
       batch.push(function(cb) {
         dummyContext(templateName, function(err, context) {
           if (err) return cb(err);
-          render(templateName, context, cb);
+          render(templateName, context, rewrite, cb);
         });
       });
       batch.push(function(cb) {
@@ -129,3 +126,7 @@ describe("swig-email-templates", function() {
     };
   }
 });
+
+function rewrite(urlString) {
+  return urlString + "-append";
+}
