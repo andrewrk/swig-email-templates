@@ -44,14 +44,20 @@ function init(options, cb) {
             if (err) {
               // free the associated memory
               // with lazily created parentWindow
-              try {
-                document.parentWindow.close();
-              } catch (cleanupErr) {}
+              tryCleanup();
               cb(err);
             } else {
               var inner = document.innerHTML;
-              document.parentWindow.close();
+              tryCleanup();
               cb(null, inner);
+            }
+            function tryCleanup() {
+              try {
+                document.parentWindow.close();
+              } catch (cleanupErr) {}
+              try {
+                document.close();
+              } catch (cleanupErr) {}
             }
           });
         });
