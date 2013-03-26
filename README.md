@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/superjoe30/swig-email-templates.png?branch=master)](https://travis-ci.org/superjoe30/swig-email-templates)
 # swig-email-templates
 
 Node.js module for rendering beautiful emails with swig templates and
