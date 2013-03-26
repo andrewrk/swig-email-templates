@@ -31,13 +31,25 @@ emailTemplates(options, function(err, render, generateDummy) {
   var context = {
     meatballCount: 9001,
   };
-  render('meatball-sandwich', context, function(err, html) {
+  render('meatball-sandwich.html', context, function(err, html) {
     // send html email
   });
-  generateDummy('meatball-sandwich', function(err, dummyContext) {
+  generateDummy('meatball-sandwich.html', function(err, dummyContext) {
     // dummyContext contains a context you can send to render, prepopulated
     // with dummy values. you can use this if you're building an email
     // preview tool.
   });
 });
 ```
+
+## Release Notes
+
+### 0.5.0
+
+ * **BREAKING CHANGE** - `render` and `generateDummy` no longer automatically append
+   `.html` to your template name to look it up. This means that if you before had
+   `render('meatball-sandwich')` you must change it to
+   `render('meatball-sandwich.html')` to work with 0.5.0.
+ * fixed crash during cleanup
+ * updated juice to 0.3.2
+ * updated jsdom to 0.5.4
