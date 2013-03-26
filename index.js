@@ -95,7 +95,7 @@ function createJsDomInstance(content, cb) {
 
 function compileTemplate(name, cb) {
   try {
-    cb(null, swig.compileFile(name + ".html"));
+    cb(null, swig.compileFile(name));
   } catch (err) {
     cb(err);
   }

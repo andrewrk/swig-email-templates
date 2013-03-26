@@ -109,9 +109,9 @@ describe("swig-email-templates", function() {
     return function(cb) {
       var batch = new Batch();
       batch.push(function(cb) {
-        dummyContext(templateName, function(err, context) {
+        dummyContext(templateName + '.html', function(err, context) {
           if (err) return cb(err);
-          render(templateName, context, rewrite, cb);
+          render(templateName + '.html', context, rewrite, cb);
         });
       });
       batch.push(function(cb) {
