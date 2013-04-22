@@ -45,6 +45,10 @@ emailTemplates(options, function(err, render, generateDummy) {
 
 ## Release Notes
 
+### 0.5.1
+
+ * updated juice to 0.4.0
+
 ### 0.5.0
 
  * **BREAKING CHANGE** - `render` and `generateDummy` no longer automatically append
