@@ -19,7 +19,7 @@
   "dependencies": {
     "swig": "~0.13.5",
     "swig-dummy-context": "0.0.1",
-    "juice": "~0.3.2",
+    "juice": "~0.4.0",
     "jsdom": "~0.5.4"
   }
 }
