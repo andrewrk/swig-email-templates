@@ -45,6 +45,10 @@ emailTemplates(options, function(err, render, generateDummy) {
 
 ## Release Notes
 
+### 0.6.0
+
+ * updated swig to 0.14.0
+
 ### 0.5.1
 
  * updated juice to 0.4.0
