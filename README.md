@@ -85,6 +85,10 @@ swig-email-templates render index.html email.html -r ./ -o dummy/
 
 ## Release Notes
 
+### 0.7.0
+
+ * added command line program (thanks [jmeas](https://github.com/jmeas))
+
 ### 0.6.0
 
  * updated swig to 0.14.0
