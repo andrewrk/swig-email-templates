@@ -8,7 +8,7 @@ var emailTemplates = require('../index.js'),
     root,
     argv = optimist
     .usage('\n Usage:\n' +
-      '    $0 render [files] [soptions]\n' +
+      '    $0 render [files] [options]\n' +
       '    $0 generateDummy [files] [options]\n'
       )
     .describe({

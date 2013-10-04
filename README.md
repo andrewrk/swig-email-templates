@@ -43,6 +43,46 @@ emailTemplates(options, function(err, render, generateDummy) {
 });
 ```
 
+## Command Line
+
+Installing swig-email-templates through npm will put the `swig-email-templates` command in your system path, allowing it to be run from any directory.
+
+Usage:
+
+```
+swig-email-templates render [files] [options]
+swig-email-templates generateDummy [files] [options]
+```
+
+Where `[files]` can be any number of input files to process.
+
+The options are:
+
+* **-v, --version**: Display the installed version of swig-email-templates
+* **-h, --help**: Show the help screen
+* **-o --output**: The directory to output your files to. Defaults to `stdout`
+* **-r, --root**: The root location for the files. The default is `templates`.
+
+* **-j, --json**: The file that contains your context, stored in JSON
+* **-c, --context**: The file that contains your context, stored as a CommonJS module. Used only if `-j` is not provided.
+
+### Example usage
+
+The following examples renders two files, `email1.html` and `email2.html`, both contained in the cwd using the context stored in `context/main.json`. The results are placed in the folder `output`.
+
+```
+swig-email-templates render email1.html email2.html -r ./ -o output/ -j context/main.json
+```
+
+Generating dummy context is hardly any different. The output of this function is the dummy context itself, in JSON format. The name given to the context is the 
+
+In this case, we generate the dummy context for a file, `email.html`, and place it in the directory `dummy`. The generated file has the same name as the input file, but uses the `.json` file extension. So, in this example, we will generate `dummy/about.json`.
+
+```
+swig-email-templates render index.html about.html -r ./ -o dummy/
+```
+
+
 ## Release Notes
 
 ### 0.6.0
