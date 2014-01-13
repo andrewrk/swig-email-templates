@@ -4,25 +4,25 @@ var emailTemplates = require('../')
   , assert = require('assert')
   , path = require('path')
   , Batch = require('batch')
-  , fs = require('fs')
+  , fs = require('fs');
 
 swig.init({
   allowErrors: true,
-  root: path.join(__dirname, "templates"),
+  root: path.join(__dirname, "templates")
 });
 var testMap = {
   "simple_vars": {
-    hello: "hello",
+    hello: "hello"
   },
   "two_vars_content": {
     one: "one",
-    two: "two",
+    two: "two"
   },
   "for_loop": {
     scalar: "scalar",
     scalar2: "scalar2",
     xyz: [ "abcd" ],
-    lalala: "lalala",
+    lalala: "lalala"
   },
   "plays": {
     subject: "subject",
@@ -35,7 +35,7 @@ var testMap = {
     twitterShareUrl: "twitterShareUrl",
     userName: "userName",
     opportunityListenUrl: "opportunityListenUrl",
-    submissionStatsUrl: "submissionStatsUrl",
+    submissionStatsUrl: "submissionStatsUrl"
   },
   "if_statement": {
     one: "one",
@@ -44,75 +44,71 @@ var testMap = {
     four: "four",
     five: "five",
     foo: "foo",
-    derp: "derp",
+    derp: "derp"
   },
   "comments": {
     twenty: "twenty",
     ten: "ten",
     eleven: "eleven",
     baseOne: "baseOne",
-    baseTwo: "baseTwo",
+    baseTwo: "baseTwo"
   },
   "complex_variable": {
     scalar: "scalar",
     one: {
       two: {
         three: "three",
-        four: "four",
+        four: "four"
       },
       five: {
-        four: "four",
+        four: "four"
       },
-      six: "six",
+      six: "six"
     },
     foo: {
       bar: "bar",
       arr: [{
         prop: [{
-          prop2: "prop2",
-        }],
-      }],
+          prop2: "prop2"
+        }]
+      }]
     },
     xyz: [[
       {
         one: "one",
-        two: "two",
-      },
+        two: "two"
+      }
     ]],
     lalala: "lalala",
-    la2: "la2",
-  },
+    la2: "la2"
+  }
 };
 
 describe("swig-email-templates", function() {
-  var render, dummyContext;
+  var render;
   before(function(cb) {
     var options = {
-      root: path.join(__dirname, "templates"),
+      root: path.join(__dirname, "templates")
     };
-    emailTemplates(options, function(err, renderFn, dummyContextFn) {
+    emailTemplates(options, function(err, renderFn) {
       if (err) {
         cb(err);
       } else {
         render = renderFn;
-        dummyContext = dummyContextFn;
         cb();
       }
     });
   });
 
   for (var templateName in testMap) {
-    it(templateName, createIt(templateName));
+    it(templateName, createIt(templateName, testMap[templateName]));
   }
   
-  function createIt(templateName) {
+  function createIt(templateName, context) {
     return function(cb) {
       var batch = new Batch();
       batch.push(function(cb) {
-        dummyContext(templateName + '.html', function(err, context) {
-          if (err) return cb(err);
-          render(templateName + '.html', context, rewrite, cb);
-        });
+        render(templateName + '.html', context, rewrite, cb);
       });
       batch.push(function(cb) {
         var filename = path.join(__dirname, "templates", templateName + ".out.html");
