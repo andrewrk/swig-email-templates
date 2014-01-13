@@ -1,16 +1,13 @@
 var swig = require("swig")
   , juiceDocument = require("juice").juiceDocument
   , path = require("path")
-  , jsdom = require("jsdom");
+  , jsdom = require("jsdom")
+  , rootFolder = path.join(__dirname, "templates");
 
 module.exports = init;
 
 function init(options, cb) {
-  options = extend({
-    root: path.join(__dirname, "templates"),
-    allowErrors: true
-  }, options || {});
-  swig.init(options);
+  rootFolder = options.root || rootFolder;
 
   cb(null, render);
     
@@ -90,7 +87,7 @@ function createJsDomInstance(content, cb) {
 
 function compileTemplate(name, cb) {
   try {
-    cb(null, swig.compileFile(name));
+    cb(null, swig.compileFile(path.join(rootFolder, name)));
   } catch (err) {
     cb(err);
   }
@@ -98,7 +95,7 @@ function compileTemplate(name, cb) {
 
 function renderTemplate(template, context, cb) {
   try {
-    cb(null, template.render(context));
+    cb(null, template(context));
   } catch (err) {
     cb(err);
   }

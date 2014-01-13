@@ -6,10 +6,6 @@ var emailTemplates = require('../')
   , Batch = require('batch')
   , fs = require('fs');
 
-swig.init({
-  allowErrors: true,
-  root: path.join(__dirname, "templates")
-});
 var testMap = {
   "simple_vars": {
     hello: "hello"
