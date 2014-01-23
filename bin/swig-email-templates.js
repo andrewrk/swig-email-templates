@@ -8,8 +8,7 @@ var emailTemplates = require('../index.js'),
     root,
     argv = optimist
     .usage('\n Usage:\n' +
-      '    $0 render [files] [options]\n' +
-      '    $0 generateDummy [files] [options]\n'
+      '    $0 render [files] [options]\n'
       )
     .describe({
       v: 'Show the swig-email-templates version number.',
@@ -38,7 +37,7 @@ var emailTemplates = require('../index.js'),
       }
 
       command = argv._.shift();
-      if (command !== 'render' && command !== 'generateDummy') {
+      if (command !== 'render') {
         throw new Error('Unrecognized command "' + command + '". Use -h for help.');
       }
     })
@@ -101,24 +100,6 @@ switch (command) {
             console.log(err);
           } else {
             out(file, html);
-          }
-        });
-      });
-    };
-    break;
-
-  case 'generateDummy':
-    fn = function (file, str) {
-      var options = {
-        root: argv.r
-      };
-      emailTemplates(options, function(err, z, generateDummy) {
-        generateDummy(file, function(err, dummyContext) {
-          if (err) {
-            console.log(err);
-          } else {
-            dummyContext = JSON.stringify(dummyContext);
-            out(file, dummyContext, '.json');
           }
         });
       });

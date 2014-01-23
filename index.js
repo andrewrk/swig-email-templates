@@ -1,5 +1,5 @@
 var swig = require("swig")
-  , juiceDocument = require("juice").juiceDocument
+  , juiceDocument = require("juice2").juiceDocument
   , path = require("path")
   , jsdom = require("jsdom")
   , rootFolder = path.join(__dirname, "templates");

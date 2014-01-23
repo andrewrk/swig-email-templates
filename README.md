@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/superjoe30/swig-email-templates.png?branch=master)](https://travis-ci.org/superjoe30/swig-email-templates)
 # swig-email-templates
 
-Node.js module for rendering beautiful emails with swig templates and
+Node.js module for rendering emails with swig templates and
 email-friendly inline CSS using [juice](https://github.com/LearnBoost/juice).
 
 Inspired by [niftylettuce/node-email-templates](https://github.com/niftylettuce/node-email-templates).
@@ -12,9 +12,6 @@ Inspired by [niftylettuce/node-email-templates](https://github.com/niftylettuce/
    [Django-inspired template inheritance](https://docs.djangoproject.com/en/dev/topics/templates/#template-inheritance).
  * Uses [juice](https://github.com/LearnBoost/juice), which takes an HTML
    file and inlines all the `<link rel="stylesheet">`s and the `<style>`s.
- * Uses [swig-dummy-context](https://github.com/superjoe30/swig-dummy-context)
-   which gives you the ability to generate dummy context from a template to
-   aid in an email preview tool.
  * URL rewrite support - you can provide a `urlRewriteFn` argument to rewrite
    your links.
 
@@ -28,17 +25,12 @@ var options = {
   root: path.join(__dirname, "templates"),
   // any other swig options allowed here
 };
-emailTemplates(options, function(err, render, generateDummy) {
+emailTemplates(options, function(err, render) {
   var context = {
     meatballCount: 9001,
   };
   render('meatball-sandwich.html', context, function(err, html) {
     // send html email
-  });
-  generateDummy('meatball-sandwich.html', function(err, dummyContext) {
-    // dummyContext contains a context you can send to render, prepopulated
-    // with dummy values. you can use this if you're building an email
-    // preview tool.
   });
 });
 ```
@@ -51,7 +43,6 @@ Installing swig-email-templates through npm will put the `swig-email-templates` 
 
 ```
 swig-email-templates render [files] [options]
-swig-email-templates generateDummy [files] [options]
 ```
 
 Where `[files]` can be any number of input files to process.
@@ -74,16 +65,16 @@ The following examples renders two files, `email1.html` and `email2.html`, which
 swig-email-templates render email1.html email2.html -r ./ -o output/ -j context/main.json
 ```
 
-Generating dummy context is largely the same. The output of this function is the dummy context itself, in JSON format. The name given to the context is the same name as the input file, but with the `.json` file extension.
-
-In this case, we generate the dummy context for a file, `email.html`, and place it in the directory `dummy`. In this example, we will generate `about.json`.
-
-```
-swig-email-templates render index.html email.html -r ./ -o dummy/
-```
-
 
 ## Release Notes
+
+### 1.0.0
+
+ * **BREAKING CHANGE** - the ability to generate a dummy context was removed
+   because swig [dropped support](https://github.com/paularmstrong/swig/issues/176)
+   for ability to access the parse tree when it went to 1.x.
+ * Update swig dependency to 1.3.0
+ * Update jsdom dependency to 0.8.11
 
 ### 0.7.0
 
