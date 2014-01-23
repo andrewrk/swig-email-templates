@@ -20,8 +20,7 @@
     "swig-email-templates": "bin/swig-email-templates.js"
   },
   "dependencies": {
-    "swig": "~0.14.0",
-    "swig-dummy-context": "0.0.1",
+    "swig": "~1.2.2",
     "juice": "~0.4.0",
     "jsdom": "~0.5.4",
     "optimist": "0.6.0"
