@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/superjoe30/swig-email-templates.png?branch=master)](https://travis-ci.org/superjoe30/swig-email-templates)
+[![Build Status](https://travis-ci.org/andrewrk/swig-email-templates.png?branch=master)](https://travis-ci.org/andrewrk/swig-email-templates)
 # swig-email-templates
 
 Node.js module for rendering emails with swig templates and
@@ -75,7 +75,7 @@ swig-email-templates render email1.html email2.html -r ./ -o output/ -j context/
    for ability to access the parse tree when it went to 1.x.
  * Update swig dependency to 1.3.0
  * Update jsdom dependency to 0.8.11
- * Switch to [juice2 fork](https://github.com/superjoe30/juice)
+ * Switch to [juice2 fork](https://github.com/andrewrk/juice)
 
 ### 0.7.0
 
