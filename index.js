@@ -9,6 +9,7 @@ module.exports = init;
 function init(options, cb) {
   rootFolder = options.root || rootFolder;
 
+  swig.setDefaults(options);
   cb(null, render);
     
   function render(templateName, context, urlRewriteFn, cb) {
