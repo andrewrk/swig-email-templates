@@ -27,7 +27,9 @@ function init(options, cb) {
           if (err) return cb(err);
           if (urlRewriteFn) rewriteUrls(document, urlRewriteFn);
           var fileUrl = "file://" + path.resolve(process.cwd(), path.join(options.root, templateName));
-          juiceDocument(document, { url: fileUrl }, function(err) {
+          options.juice = options.juice || {};
+          options.juice.url = fileUrl;
+          juiceDocument(document, options.juice, function(err) {
             if (err) {
               // free the associated memory
               // with lazily created parentWindow
