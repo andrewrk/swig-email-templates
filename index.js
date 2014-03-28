@@ -96,10 +96,11 @@ function createJsDomInstance(content, cb) {
 function generateText(options, context, html, cb) {
   try {
     if (options.hasOwnProperty('text') && !options.text) return cb(null, null);
-    var templateName = path.basename(options.juice.url, ".html") + ".txt";
-    var templateUrl = path.join(path.dirname(options.juice.url.slice(7)), templateName);
-    if (fs.existsSync(templateUrl))
-      compileTemplate(templateName, function(err, template) {
+    var fileUrl = options.juice.url;
+    var txtName = path.basename(fileUrl, path.extname(fileUrl)) + ".txt";
+    var txtUrl = path.join(path.dirname(options.juice.url.slice(7)), txtName);
+    if (fs.existsSync(txtUrl))
+      compileTemplate(txtName, function(err, template) {
         renderTemplate(template, context, cb);
       });
     else
