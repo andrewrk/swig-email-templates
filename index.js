@@ -2,6 +2,8 @@ var swig = require("swig")
   , juiceDocument = require("juice2").juiceDocument
   , path = require("path")
   , jsdom = require("jsdom")
+  , fs = require('fs')
+  , htmlToText = require("html-to-text")
   , rootFolder = path.join(__dirname, "templates");
 
 module.exports = init;
@@ -38,7 +40,10 @@ function init(options, cb) {
             } else {
               var inner = document.innerHTML;
               tryCleanup();
-              cb(null, inner);
+              generateText(options, context, inner, function(err, text) {
+                if (err) return cb(err);
+                cb(null, inner, text);
+              });
             }
             function tryCleanup() {
               try {
@@ -83,6 +88,22 @@ function createJsDomInstance(content, cb) {
   };
   try {
     cb(null, jsdom.html(html, null, options));
+  } catch (err) {
+    cb(err);
+  }
+}
+
+function generateText(options, context, html, cb) {
+  try {
+    if (options.hasOwnProperty('text') && !options.text) return cb(null, null);
+    var templateName = path.basename(options.juice.url, ".html") + ".txt";
+    var templateUrl = path.join(path.dirname(options.juice.url.slice(7)), templateName);
+    if (fs.existsSync(templateUrl))
+      compileTemplate(templateName, function(err, template) {
+        renderTemplate(template, context, cb);
+      });
+    else
+      cb(null, htmlToText.fromString(html));
   } catch (err) {
     cb(err);
   }
