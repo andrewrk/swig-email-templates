@@ -104,15 +104,25 @@ describe("swig-email-templates", function() {
     return function(cb) {
       var batch = new Batch();
       batch.push(function(cb) {
-        render(templateName + '.html', context, rewrite, cb);
+        render(templateName + '.html', context, rewrite, function(err, html, text) {
+          cb(err, {
+            html: html,
+            text: text
+          });
+        });
       });
       batch.push(function(cb) {
         var filename = path.join(__dirname, "templates", templateName + ".out.html");
         fs.readFile(filename, 'utf8', cb);
       });
+      batch.push(function(cb) {
+        var filename = path.join(__dirname, "templates", templateName + ".out.txt");
+        fs.readFile(filename, 'utf8', cb);
+      });
       batch.end(function(err, results) {
         if (err) return cb(err);
-        assert.strictEqual(results[0].trim(), results[1].trim());
+        assert.strictEqual(results[0].html.trim(), results[1].trim());
+        assert.strictEqual(results[0].text.trim(), results[2].trim());
         cb();
       });
     };

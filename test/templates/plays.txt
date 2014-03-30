@@ -1,0 +1,16 @@
+{% extends "base.txt" %}
+
+{% block head %}
+  {% parent %}
+  Indaba Music.
+{% endblock %}
+
+{% block content %}
+
+Hey {{ userName }},
+
+Your recent submission just reached {{ playCount }} plays! Drunk with fame? Keep promoting your track and be sure to check out the submissions by Indaba members who have recently listened to yours.
+
+Listen to more tracks - {{ opportunityListenUrl }}
+
+{% endblock %}

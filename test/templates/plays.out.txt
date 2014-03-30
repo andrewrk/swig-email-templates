@@ -1,0 +1,24 @@
+Text template header.
+
+  Indaba Music.
+
+
+
+
+Hey userName,
+
+Your recent submission just reached playCount plays! Drunk with fame? Keep promoting your track and be sure to check out the submissions by Indaba members who have recently listened to yours.
+
+Listen to more tracks - opportunityListenUrl
+
+
+
+You are receiving this email as a registered member of
+Indaba Music.
+
+Email Preferences: emailPreferencesUrl
+
+Indaba Music 568 Broadway New York, NY 10012
+
+Privacy Policy: http://www.indabamusic.com/corporate/privacy
+About: http://www.indabamusic.com/about
