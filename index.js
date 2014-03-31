@@ -94,20 +94,19 @@ function createJsDomInstance(content, cb) {
 }
 
 function generateText(options, context, html, cb) {
-  try {
-    if (options.hasOwnProperty('text') && !options.text) return cb(null, null);
-    var fileUrl = options.juice.url;
-    var txtName = path.basename(fileUrl, path.extname(fileUrl)) + ".txt";
-    var txtUrl = path.join(path.dirname(options.juice.url.slice(7)), txtName);
-    if (fs.existsSync(txtUrl))
+  if (options.hasOwnProperty('text') && !options.text) return cb(null, null);
+  var fileUrl = options.juice.url;
+  var txtName = path.basename(fileUrl, path.extname(fileUrl)) + ".txt";
+  var txtUrl = path.join(path.dirname(options.juice.url.slice(7)), txtName);
+  fs.exists(txtUrl, function(exists) {
+    if (exists) {
       compileTemplate(txtName, function(err, template) {
         renderTemplate(template, context, cb);
       });
-    else
+    } else {
       cb(null, htmlToText.fromString(html));
-  } catch (err) {
-    cb(err);
-  }
+    }
+  });
 }
 
 function compileTemplate(name, cb) {
