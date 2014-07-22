@@ -1,3 +1,11 @@
+### 1.2.0
+
+ * Andrew Kelley
+   - pend instead of batch dev dependency
+   - update dependencies
+   - extract CHANGELOG from README
+   - add Expat license
+
 ### 1.1.0
 
  * Dennis
