@@ -1,3 +1,9 @@
+### 1.3.0
+
+ * Connor Keenan
+   - support text templates as well as html, and automatically render
+     text emails based on the html when none is provided.
+
 ### 1.2.0
 
  * Andrew Kelley
