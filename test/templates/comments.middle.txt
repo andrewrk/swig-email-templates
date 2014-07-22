@@ -1,0 +1,10 @@
+{% extends "comments.base.txt" %}
+
+{% block content %}
+  {{ ten }}
+  
+  {% block body %}
+  {% endblock %}
+  
+  {{ eleven }}
+{% endblock %}

@@ -14,6 +14,10 @@ Inspired by [niftylettuce/node-email-templates](https://github.com/niftylettuce/
    file and inlines all the `<link rel="stylesheet">`s and the `<style>`s.
  * URL rewrite support - you can provide a `urlRewriteFn` argument to rewrite
    your links.
+ * Text emails - for a template name passed into render(), if a file exists 
+   with the same name but a .txt extension it will be rendered separately.
+   If the .txt file does not exist, html-to-text will auto-generate a text 
+   version of the html file. This can be disabled with the option `text: false`.
 
 ## Usage
 
@@ -29,8 +33,8 @@ emailTemplates(options, function(err, render) {
   var context = {
     meatballCount: 9001,
   };
-  render('meatball-sandwich.html', context, function(err, html) {
-    // send html email
+  render('meatball-sandwich.html', context, function(err, html, text) {
+    // send html/text email
   });
 });
 ```

@@ -103,23 +103,44 @@ describe("swig-email-templates", function() {
   function createIt(templateName, context) {
     return function(cb) {
       var pend = new Pend();
-      var expected, actual;
+      var expectedHtml, actualHtml;
+      var expectedText, actualText;
       pend.go(function(cb) {
-        render(templateName + '.html', context, rewrite, function(err, val) {
-          actual = val;
+        render(templateName + '.html', context, rewrite, function(err, html, text) {
+          actualHtml = html;
+          actualText = text;
           cb(err);
         });
       });
       pend.go(function(cb) {
         var filename = path.join(__dirname, "templates", templateName + ".out.html");
         fs.readFile(filename, 'utf8', function(err, val) {
-          expected = val;
+          expectedHtml = val;
           cb(err);
+        });
+      });
+      pend.go(function(cb) {
+        var filename = path.join(__dirname, "templates", templateName + ".out.txt");
+        fs.readFile(filename, 'utf8', function(err, val) {
+          if (err) {
+            if (err.code === 'ENOENT') {
+              expectedText = null;
+              cb();
+            } else {
+              cb(err);
+            }
+          } else {
+            expectedText = val;
+            cb();
+          }
         });
       });
       pend.wait(function(err) {
         if (err) return cb(err);
-        assert.strictEqual(actual.trim(), expected.trim());
+        assert.strictEqual(actualHtml.trim(), expectedHtml.trim());
+        if (expectedText) {
+          assert.strictEqual(actualText.trim(), expectedText.trim());
+        }
         cb();
       });
     };

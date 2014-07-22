@@ -1,0 +1,16 @@
+{% block head %}
+Text template header.
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+You are receiving this email as a registered member of
+Indaba Music.
+
+Email Preferences: {{ emailPreferencesUrl }}
+
+Indaba Music 568 Broadway New York, NY 10012
+
+Privacy Policy: http://www.indabamusic.com/corporate/privacy
+About: http://www.indabamusic.com/about
