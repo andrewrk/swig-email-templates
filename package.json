@@ -14,7 +14,7 @@
   "license": "BSD",
   "devDependencies": {
     "mocha": "~1.17.1",
-    "batch": "~0.5.0"
+    "pend": "~1.1.2"
   },
   "bin": {
     "swig-email-templates": "bin/swig-email-templates.js"

@@ -1,10 +1,10 @@
-var emailTemplates = require('../')
-  , createDummyContext = emailTemplates.createDummyContext
-  , swig = require('swig')
-  , assert = require('assert')
-  , path = require('path')
-  , Batch = require('batch')
-  , fs = require('fs');
+var emailTemplates = require('../');
+var createDummyContext = emailTemplates.createDummyContext;
+var swig = require('swig');
+var assert = require('assert');
+var path = require('path');
+var Pend = require('pend');
+var fs = require('fs');
 
 var testMap = {
   "simple_vars": {
@@ -102,17 +102,24 @@ describe("swig-email-templates", function() {
   
   function createIt(templateName, context) {
     return function(cb) {
-      var batch = new Batch();
-      batch.push(function(cb) {
-        render(templateName + '.html', context, rewrite, cb);
+      var pend = new Pend();
+      var expected, actual;
+      pend.go(function(cb) {
+        render(templateName + '.html', context, rewrite, function(err, val) {
+          actual = val;
+          cb(err);
+        });
       });
-      batch.push(function(cb) {
+      pend.go(function(cb) {
         var filename = path.join(__dirname, "templates", templateName + ".out.html");
-        fs.readFile(filename, 'utf8', cb);
+        fs.readFile(filename, 'utf8', function(err, val) {
+          expected = val;
+          cb(err);
+        });
       });
-      batch.end(function(err, results) {
+      pend.wait(function(err) {
         if (err) return cb(err);
-        assert.strictEqual(results[0].trim(), results[1].trim());
+        assert.strictEqual(expected.trim(), actual.trim());
         cb();
       });
     };
