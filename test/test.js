@@ -119,7 +119,7 @@ describe("swig-email-templates", function() {
       });
       pend.wait(function(err) {
         if (err) return cb(err);
-        assert.strictEqual(expected.trim(), actual.trim());
+        assert.strictEqual(actual.trim(), expected.trim());
         cb();
       });
     };
