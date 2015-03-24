@@ -38,7 +38,7 @@ function init(options, cb) {
               tryCleanup();
               cb(err);
             } else {
-              var inner = document.innerHTML;
+              var inner = jsdom.serializeDocument(document);
               tryCleanup();
               generateText(options, context, inner, function(err, text) {
                 if (err) return cb(err);
@@ -87,7 +87,7 @@ function createJsDomInstance(content, cb) {
     }
   };
   try {
-    cb(null, jsdom.html(html, null, options));
+    cb(null, jsdom.jsdom(html, options));
   } catch (err) {
     cb(err);
   }
