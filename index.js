@@ -12,6 +12,11 @@ function init(options, cb) {
   rootFolder = options.root || rootFolder;
 
   swig.setDefaults(options);
+  if (options.filters) {
+    Object.keys(options.filters).forEach(function(filterName) {
+      swig.setFilter(filterName, options.filters[filterName]);
+    });
+  }
   cb(null, render);
     
   function render(templateName, context, urlRewriteFn, cb) {
