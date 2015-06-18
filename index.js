@@ -12,6 +12,11 @@ function init(options, cb) {
   rootFolder = options.root || rootFolder;
 
   swig.setDefaults(options);
+  if (options.filters) {
+    Object.keys(options.filters).forEach(function(filterName) {
+      swig.setFilter(filterName, options.filters[filterName]);
+    });
+  }
   cb(null, render);
     
   function render(templateName, context, urlRewriteFn, cb) {
@@ -38,7 +43,7 @@ function init(options, cb) {
               tryCleanup();
               cb(err);
             } else {
-              var inner = document.innerHTML;
+              var inner = '<html>' + document.documentElement.innerHTML + '</html>';
               tryCleanup();
               generateText(options, context, inner, function(err, text) {
                 if (err) return cb(err);
@@ -79,15 +84,20 @@ function createJsDomInstance(content, cb) {
   // or a filename. https://github.com/tmpvar/jsdom/issues/554
   var html = content + "\n";
   var options = {
+    html: html,
     features: {
       QuerySelector: ['1.0'],
       FetchExternalResources: false,
       ProcessExternalResources: false,
       MutationEvents: false
+    },
+    loaded: function(err, window) {
+      cb(err, window.document);
     }
   };
   try {
-    cb(null, jsdom.html(html, null, options));
+    jsdom.env(options);
+    //cb(null, jsdom.html(html, null, options));
   } catch (err) {
     cb(err);
   }
@@ -110,19 +120,24 @@ function generateText(options, context, html, cb) {
 }
 
 function compileTemplate(name, cb) {
+  var rez;
   try {
-    cb(null, swig.compileFile(path.join(rootFolder, name)));
+    rez = swig.compileFile(path.join(rootFolder, name));
   } catch (err) {
-    cb(err);
+    return cb(err);
   }
+  cb(null, rez);
+  
 }
 
 function renderTemplate(template, context, cb) {
+  var tpl;
   try {
-    cb(null, template(context));
+    tpl = template(context);
   } catch (err) {
-    cb(err);
+    return cb(err);
   }
+  cb(null, tpl);
 }
 
 var owns = {}.hasOwnProperty;
