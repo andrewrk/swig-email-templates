@@ -38,7 +38,7 @@ function init(options, cb) {
               tryCleanup();
               cb(err);
             } else {
-              var inner = document.innerHTML;
+              var inner = jsdom.serializeDocument(document);
               tryCleanup();
               generateText(options, context, inner, function(err, text) {
                 if (err) return cb(err);
@@ -87,7 +87,7 @@ function createJsDomInstance(content, cb) {
     }
   };
   try {
-    cb(null, jsdom.html(html, null, options));
+    cb(null, jsdom.jsdom(html, options));
   } catch (err) {
     cb(err);
   }
@@ -110,19 +110,25 @@ function generateText(options, context, html, cb) {
 }
 
 function compileTemplate(name, cb) {
+  var compileResult;
   try {
-    cb(null, swig.compileFile(path.join(rootFolder, name)));
+    compileResult = swig.compileFile(path.join(rootFolder, name));
   } catch (err) {
     cb(err);
+    return;
   }
+  cb(null, compileResult);
 }
 
 function renderTemplate(template, context, cb) {
+  var templateResult;
   try {
-    cb(null, template(context));
+    templateResult = template(context);
   } catch (err) {
     cb(err);
+    return;
   }
+  cb(null, templateResult);
 }
 
 var owns = {}.hasOwnProperty;
