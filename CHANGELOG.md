@@ -1,3 +1,8 @@
+### 1.4.0
+
+ * Marcin Jekot and domasx2
+   - update to work on node v0.12 and fix test failures.
+
 ### 1.3.0
 
  * Connor Keenan
