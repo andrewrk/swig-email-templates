@@ -1,0 +1,13 @@
+{
+	"subject": "subject",
+	"emailPreferencesUrl": "emailPreferencesUrl",
+	"userImgUrl": "userImgUrl",
+	"playCount": "playCount",
+	"commentCount": "commentCount",
+	"voteCount": "voteCount",
+	"facebookShareUrl": "facebookShareUrl",
+	"twitterShareUrl": "twitterShareUrl",
+	"userName": "userName",
+	"opportunityListenUrl": "opportunityListenUrl",
+	"submissionStatsUrl": "submissionStatsUrl"
+}
