@@ -10,6 +10,9 @@ var fs = require('fs');
 // testName: what it should do
 var testMap = {
   'simple_vars': 'should do simple variable substitution',
+  'rewrite_links': 'should rewrite links',
+
+
   'two_vars_content': 'two_vars_content',
   'for_loop': 'for_loop',
   'if_statement': 'if_statement',
