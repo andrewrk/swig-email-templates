@@ -11,7 +11,9 @@ var fs = require('fs');
 var testMap = {
   'simple_vars': 'should do simple variable substitution',
   'rewrite_links': 'should rewrite links',
-
+  'inline_style_tag': 'should inline the contents of style tags',
+  'inline_style_link': 'should inline CSS from local CSS using <link>',
+  'text_file_alternative': 'should load the text file alternative instead of textifying the HTML',
 
   'two_vars_content': 'two_vars_content',
   'for_loop': 'for_loop',
@@ -101,10 +103,10 @@ describe("swig-email-templates", function() {
       pend.wait(function(err) {
         if (err) return cb(err);
 
-        assert.strictEqual(actualHtml.trim(), expectedHtml.trim());
-        if (expectedText) {
+        if (expectedHtml)
+          assert.strictEqual(actualHtml.trim(), expectedHtml.trim());
+        if (expectedText)
           assert.strictEqual(actualText.trim(), expectedText.trim());
-        }
         cb();
       });
     };
