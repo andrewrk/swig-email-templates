@@ -27,11 +27,15 @@ Inspired by [niftylettuce/node-email-templates](https://github.com/niftylettuce/
 
 The major version has changed as swig-email-templates no longer uses JSDom internally because it wasn't possible to use the same version of it on different versions of node.  2.x is compatible with Node 0.10 onwards, through to 5 at the time of writing.
 
-Key changes:
+API changes:
 
 * the template rendering function is provided on an object rather than via a callback
 * rewriteUrl is now an option on EmailTemplates instead of an extra argument to render()
+
+Other things you might notice:
+
 * we use Cheerio internally rather than JSDom, which means that the HTML you put in should be more similar to the HTML you get out.  In particular, Cheerio doesn't add DOCTYPE, html, body or tbody tags in where they weren't before, unlike JSDom.
+* inline styles will be in alphabetical order
 
 
 ## Quick start
