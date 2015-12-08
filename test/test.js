@@ -1,5 +1,4 @@
-var emailTemplates = require('../');
-var createDummyContext = emailTemplates.createDummyContext;
+var EmailTemplates = require('../');
 var swig = require('swig');
 var assert = require('assert');
 var path = require('path');
@@ -35,22 +34,12 @@ function attemptReadFile(path, encoding, cb) {
 }
 
 describe("swig-email-templates", function() {
-  var render;
-  var templatePath = path.join(__dirname, "templates");
-
-  before(function(cb) {
-    var options = {
-      root: templatePath
-    };
-
-    emailTemplates(options, function(err, renderFn) {
-      if (err) {
-        cb(err);
-      } else {
-        render = renderFn;
-        cb();
-      }
-    });
+  var templatePath = path.resolve(__dirname, "templates");
+  var templates = new EmailTemplates({
+    root: templatePath,
+    rewriteUrl: function (urlString) {
+      return urlString + "-append";
+    }
   });
 
   for (var testName in testMap) {
@@ -59,7 +48,9 @@ describe("swig-email-templates", function() {
   }
   
   function createIt(testName) {
-    return function(cb) {
+    return function(done) {
+      this.timeout(4000);
+
       var testPath = path.join(templatePath, testName);
 
       var expectedHtml, actualHtml;
@@ -75,7 +66,7 @@ describe("swig-email-templates", function() {
           if (err) return cb(err);
           if (data) context = JSON.parse(data);
 
-          render(testName + '.html', context, rewrite, function(err, html, text) {
+          templates.render(testName + '.html', context, function(err, html, text) {
             actualHtml = html;
             actualText = text;
             cb(err);
@@ -101,18 +92,15 @@ describe("swig-email-templates", function() {
 
       // And when they're all done...
       pend.wait(function(err) {
-        if (err) return cb(err);
+        if (err) return done(err);
 
         if (expectedHtml)
           assert.strictEqual(actualHtml.trim(), expectedHtml.trim());
         if (expectedText)
           assert.strictEqual(actualText.trim(), expectedText.trim());
-        cb();
+
+        done();
       });
     };
   }
 });
-
-function rewrite(urlString) {
-  return urlString + "-append";
-}

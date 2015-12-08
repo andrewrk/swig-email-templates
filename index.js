@@ -1,138 +1,98 @@
-var swig = require("swig");
-var juiceDocument = require("juice2").juiceDocument;
-var path = require("path");
-var jsdom = require("jsdom");
+'use strict';
+
+var path = require('path');
 var fs = require('fs');
-var htmlToText = require("html-to-text");
-var rootFolder = path.join(__dirname, "templates");
+var swig = require('swig');
+var juice = require('juice');
+var cheerio = require('cheerio');
+var htmlToText = require('html-to-text');
 
-module.exports = init;
+/*
+ * options can contain:
+ * - root (String): specifies the root for templates
+ * - urlRewrite (function (String url) => String): each url in the document wil have is href set to the return of this function
+ */
+var EmailTemplates = function (options) {
 
-function init(options, cb) {
-  rootFolder = options.root || rootFolder;
+  var self = this;
 
-  swig.setDefaults(options);
-  cb(null, render);
-    
-  function render(templateName, context, urlRewriteFn, cb) {
-    if (! cb) {
-      cb = urlRewriteFn;
-      urlRewriteFn = null;
-    }
-    // compile file into swig template
-    compileTemplate(templateName, function(err, template) {
+  options = options || {}
+  options.root = options.root || path.join(__dirname, 'templates');
+  options.juice = options.juice || {};
+  options.juice.webResources = options.juice.webResources || {};
+  options.juice.webResources.images = options.juice.webResources.images || false;
+
+  swig.setDefaults(options.swig);
+
+  /*
+   * (Internal) Compile and render a swig template
+   */
+  this.useTemplate = function (templatePath, context) {
+    var template = swig.compileFile(templatePath);
+    return template(context);
+  }
+
+
+  /*
+   * (Internal) Generate text counterpart to HTML template
+   */
+  this.generateText = function (templatePath, context, html, cb) {
+    if (options.hasOwnProperty('text') && !options.text)
+      return cb(null, null);
+
+    var textFilename = path.basename(templatePath, path.extname(templatePath)) + '.txt';
+    var textPath = path.resolve(path.dirname(templatePath), textFilename);
+
+    fs.exists(textPath, function(exists) {
+      if (exists) {
+        cb(null, self.useTemplate(textPath, context));
+      } else {
+        cb(null, htmlToText.fromString(html));
+      }
+    });
+  }
+
+
+  /*
+   * (Internal) Rewrite URLs in a Cheerio doc using a given function
+   */
+  this.rewriteUrls = function ($, rewrite) {
+    $("a").each(function(idx, anchor) {
+      var href = $(anchor).attr('href');
+      if (href !== undefined) {
+        $(anchor).attr('href', rewrite(href));
+      }
+    });
+  }
+
+
+  /*
+   * Render a template given 'templateName' and context 'context'.
+   */
+  this.render = function (templateName, context, cb) {
+    var templatePath = path.resolve(options.root, templateName);
+
+    context = context || {};
+    options.juice.webResources.relativeTo = options.juice.webResources.relativeTo || options.root;
+
+    var html = self.useTemplate(templatePath, context);
+    var $ = cheerio.load(html);
+    if (options.rewriteUrl)
+      self.rewriteUrls($, options.rewriteUrl);
+
+    // Inline resources
+    juice.juiceResources($.html(), options.juice, function(err, inlinedHTML) {
       if (err) return cb(err);
-      // render template with context
-      renderTemplate(template, context, function(err, html) {
+
+      self.generateText(templatePath, context, html, function(err, text) {
         if (err) return cb(err);
-        createJsDomInstance(html, function(err, document) {
-          if (err) return cb(err);
-          if (urlRewriteFn) rewriteUrls(document, urlRewriteFn);
-          var fileUrl = "file://" + path.resolve(process.cwd(), path.join(options.root, templateName));
-          options.juice = options.juice || {};
-          options.juice.url = fileUrl;
-          juiceDocument(document, options.juice, function(err) {
-            if (err) {
-              // free the associated memory
-              // with lazily created parentWindow
-              tryCleanup();
-              cb(err);
-            } else {
-              var inner = jsdom.serializeDocument(document);
-              tryCleanup();
-              generateText(options, context, inner, function(err, text) {
-                if (err) return cb(err);
-                cb(null, inner, text);
-              });
-            }
-            function tryCleanup() {
-              try {
-                document.parentWindow.close();
-              } catch (cleanupErr) {}
-              try {
-                document.close();
-              } catch (cleanupErr) {}
-            }
-          });
-        });
+
+        cb(null, inlinedHTML, text);
       });
     });
   }
 }
 
-function rewriteUrls(document, rewrite, cb) {
-  var anchorList = document.getElementsByTagName("a");
-  for (var i = 0; i < anchorList.length; ++i) {
-    var anchor = anchorList[i];
-    for (var j = 0; j < anchor.attributes.length; ++j) {
-      var attr = anchor.attributes[j];
-      if (attr.name.toLowerCase() === 'href') {
-        anchor.setAttribute(attr.name, rewrite(attr.value));
-        break;
-      }
-    }
-  }
-}
-
-function createJsDomInstance(content, cb) {
-  // hack to force jsdom to see this argument as html content, not a url
-  // or a filename. https://github.com/tmpvar/jsdom/issues/554
-  var html = content + "\n";
-  var options = {
-    features: {
-      QuerySelector: ['1.0'],
-      FetchExternalResources: false,
-      ProcessExternalResources: false,
-      MutationEvents: false
-    }
-  };
-  try {
-    cb(null, jsdom.jsdom(html, options));
-  } catch (err) {
-    cb(err);
-  }
-}
-
-function generateText(options, context, html, cb) {
-  if (options.hasOwnProperty('text') && !options.text) return cb(null, null);
-  var fileUrl = options.juice.url;
-  var txtName = path.basename(fileUrl, path.extname(fileUrl)) + ".txt";
-  var txtUrl = path.join(path.dirname(options.juice.url.slice(7)), txtName);
-  fs.exists(txtUrl, function(exists) {
-    if (exists) {
-      compileTemplate(txtName, function(err, template) {
-        renderTemplate(template, context, cb);
-      });
-    } else {
-      cb(null, htmlToText.fromString(html));
-    }
-  });
-}
-
-function compileTemplate(name, cb) {
-  var compileResult;
-  try {
-    compileResult = swig.compileFile(path.join(rootFolder, name));
-  } catch (err) {
-    cb(err);
-    return;
-  }
-  cb(null, compileResult);
-}
-
-function renderTemplate(template, context, cb) {
-  var templateResult;
-  try {
-    templateResult = template(context);
-  } catch (err) {
-    cb(err);
-    return;
-  }
-  cb(null, templateResult);
-}
-
-var owns = {}.hasOwnProperty;
-function extend(obj, src) {
-  for (var key in src) if (owns.call(src, key)) obj[key] = src[key];
-  return obj;
-}
+module.exports = function(options) {
+  return new EmailTemplates(options);
+};
