@@ -1,6 +1,6 @@
 {
   "name": "swig-email-templates",
-  "version": "1.4.0",
+  "version": "1.5.0-dev",
   "description": "Node.js module for rendering emails with swig templates and email-friendly inline CSS",
   "main": "index.js",
   "scripts": {
@@ -11,6 +11,9 @@
     "url": "git://github.com/andrewrk/swig-email-templates.git"
   },
   "author": "Andrew Kelley",
+  "contributors": [
+    "Andi Sidwell <andi@takkaria.org>"
+  ],
   "license": "MIT",
   "devDependencies": {
     "mocha": "~2.2.5",
