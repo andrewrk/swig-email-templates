@@ -1,3 +1,21 @@
+### 2.0.0
+
+ * Major update with support for Node 0.10 up to Node 5
+ * Switch to Cheerio instead of JSDom for compatibility with a wider range of
+   Node versions
+   - this means that the HTML you provide in your template will be closer to
+     the output of swig-email-templates.  JSDom added in html, body, tbody tags
+     where Cheerio doesn't
+ * Switch back to the the original 'juice' which is now more actively maintained
+   - this version of juice also inlines images using data: URLs
+   - be mindful that juice will fetch external resources for inlining, which can
+     take some time
+ * At the same time it made sense to refactor the API a bit:
+   - the library presents itself as a class with a constructor method
+   - rewriteUrl is now an option on EmailTemplates instead of an extra argument
+     to render()
+   - commandline tool no longer takes 'render' as a parameter
+
 ### 1.4.0
 
  * Marcin Jekot and domasx2

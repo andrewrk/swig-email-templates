@@ -14,7 +14,7 @@ Inspired by [niftylettuce/node-email-templates](https://github.com/niftylettuce/
 
  * Uses [swig](https://github.com/paularmstrong/swig/), which supports
    [Django-inspired template inheritance](https://docs.djangoproject.com/en/dev/topics/templates/#template-inheritance).
- * Uses [juice](https://github.com/LearnBoost/juice), which takes an HTML
+ * Uses [juice](https://github.com/Automattic/juice), which takes an HTML
    file and inlines all the `<link rel="stylesheet">`s and the `<style>`s.
  * URL rewrite support - you can provide a function to rewrite your links.
  * Text emails - for a template name passed into render(), if a file exists 
@@ -25,17 +25,8 @@ Inspired by [niftylettuce/node-email-templates](https://github.com/niftylettuce/
 
 ## Upgrading from 1.x
 
-The major version has changed as swig-email-templates no longer uses JSDom internally because it wasn't possible to use the same version of it on different versions of node.  2.x is compatible with Node 0.10 onwards, through to 5 at the time of writing.
-
-API changes:
-
-* the template rendering function is provided on an object rather than via a callback
-* rewriteUrl is now an option on EmailTemplates instead of an extra argument to render()
-
-Other things you might notice:
-
-* we use Cheerio internally rather than JSDom, which means that the HTML you put in should be more similar to the HTML you get out.  In particular, Cheerio doesn't add DOCTYPE, html, body or tbody tags in where they weren't before, unlike JSDom.
-* inline styles will be in alphabetical order
+Check out the changelog for details of what changed since 1.x.  The upgrade
+should be pretty straightforward.
 
 
 ## Quick start
@@ -156,7 +147,7 @@ Installing swig-email-templates through npm will put the `swig-email-templates` 
 ### Usage
 
 ```
-swig-email-templates render [files] [options]
+swig-email-templates [files] [options]
 ```
 
 Where `[files]` can be any number of input files to process.
@@ -165,9 +156,9 @@ The options are:
 
 * **-v, --version**: Display the installed version of swig-email-templates
 * **-h, --help**: Show the help screen
-* **-o --output**: The directory to output your files to. Defaults to `stdout`
-* **-r, --root**: The root location for the files. The default is `templates`.
-* **-j, --json**: The file that contains your context, stored in JSON
+* **-o, --output**: The directory to output your files to. Defaults to `stdout`
+* **-r, --root**: The root location for the files. The default is `.`.
+* **-j, --json**: The file that contains your context, stored in JSON.
 * **-c, --context**: The file that contains your context, stored as a CommonJS module. Used only if `-j` is not provided.
 
 ### Example
@@ -175,9 +166,8 @@ The options are:
 The following examples renders two files, `email1.html` and `email2.html`, which are both contained in the cwd. It uses the context stored in `context/main.json` for rendering, and places the results in the folder `output`.
 
 ```
-swig-email-templates render email1.html email2.html -r ./ -o output/ -j context/main.json
+swig-email-templates render email1.html email2.html -o output/ -j context/main.json
 ```
-
 
 
 ## Tests
