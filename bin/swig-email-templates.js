@@ -1,14 +1,13 @@
 #!/usr/bin/env node
 
-var emailTemplates = require('../index.js'),
-    optimist = require('optimist'),
-    fs = require('fs'),
-    path = require('path'),
-    command,
-    root,
-    argv = optimist
+var EmailTemplates = require('../index.js');
+var optimist = require('optimist');
+var fs = require('fs');
+var path = require('path');
+
+var opts = optimist
     .usage('\n Usage:\n' +
-      '    $0 render [files] [options]\n'
+      '    $0 [files] [options]\n'
       )
     .describe({
       v: 'Show the swig-email-templates version number.',
@@ -16,7 +15,7 @@ var emailTemplates = require('../index.js'),
       r: 'Root location of your templates.',
       h: 'Show this help screen.',
       j: 'Variable context as a JSON file.',
-      c: 'Variable context as a CommonJS-style file. Used only if option `j` is not provided.'
+      c: 'Variable context as a CommonJS-style file, if -j not provided'
     })
     .alias('v', 'version')
     .alias('o', 'output')
@@ -25,7 +24,7 @@ var emailTemplates = require('../index.js'),
     .alias('j', 'json')
     .alias('c', 'context')
     .alias('r', 'root')
-    .default('r', 'templates')
+    .default('r', '.')
     .check(function (argv) {
       if (argv.v) {
         return;
@@ -35,30 +34,26 @@ var emailTemplates = require('../index.js'),
         optimist.showHelp();
         process.exit(0);
       }
+    });
 
-      command = argv._.shift();
-      if (command !== 'render') {
-        throw new Error('Unrecognized command "' + command + '". Use -h for help.');
-      }
-    })
-    .argv,
-    ctx = {},
-    out = function (file, str) {
-      console.log(str);
-    },
-    fn;
+var argv = opts.argv;
 
+// Version number
 if (argv.v) {
   console.log(require('../package').version);
   process.exit(0);
 }
 
+// JSON input
+var ctx;
 if (argv.j) {
   ctx = JSON.parse(fs.readFileSync(argv.j, 'utf8'));
 } else if (argv.c) {
   ctx = require(argv.c);
 }
 
+// Output location
+var out;
 if (argv.o !== 'stdout') {
   argv.o += '/';
   argv.o = path.normalize(argv.o);
@@ -80,35 +75,26 @@ if (argv.o !== 'stdout') {
     fs.writeFileSync(argv.o + file, str);
     console.log('Wrote', argv.o + file);
   };
+} else {
+  out = function (file, str) {
+    console.log(str);
+  }
 }
 
+// Template root
+var root = ".";
 if (argv.r && argv.r !== 'templates') {
-  argv.r = path.normalize(argv.r);
-  root = argv.r;
+  root = path.normalize(argv.r);
 }
 
-switch (command) {
-
-  case 'render':
-    fn = function (file, str) {
-      var options = {
-        root: argv.r
-      };
-      emailTemplates(options, function(err, render) {
-        render(file, ctx, function(err, html) {
-          if (err) {
-            console.log(err);
-          } else {
-            out(file, html);
-          }
-        });
-      });
-    };
-    break;
-
-}
+var templates = new EmailTemplates({ root: root });
 
 argv._.forEach(function (file) {
-  var str = fs.readFileSync(file, 'utf8');
-  fn(file, str);
+  templates.render(file, ctx, function(err, html) {
+    if (err) {
+      console.log(err);
+    } else {
+      out(file, html);
+    }
+  });
 });
