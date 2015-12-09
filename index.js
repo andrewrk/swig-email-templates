@@ -7,11 +7,6 @@ var juice = require('juice');
 var cheerio = require('cheerio');
 var htmlToText = require('html-to-text');
 
-/*
- * options can contain:
- * - root (String): specifies the root for templates
- * - urlRewrite (function (String url) => String): each url in the document wil have is href set to the return of this function
- */
 var EmailTemplates = function (options) {
 
   var self = this;
