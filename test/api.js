@@ -30,7 +30,6 @@ describe('EmailTemplates', function() {
     it("should feed errors through callback (nonexistent templates)", function(done) {
       var templates = new EmailTemplates();
       templates.render('nonexistent', null, function(err, html, text) {
-        assert.equal(err.errno, -2);
         assert.equal(err.code, 'ENOENT');
         done();
       });
