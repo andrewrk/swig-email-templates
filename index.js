@@ -19,6 +19,12 @@ var EmailTemplates = function (options) {
 
   swig.setDefaults(options.swig);
 
+  if (options.filters) {
+    for (var filter in options.filters) {
+      swig.setFilter(filter, options.filters[filter]);
+    }
+  }
+
 
   /*
    * (Internal) Compile and render a swig template

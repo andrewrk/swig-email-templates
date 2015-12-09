@@ -8,6 +8,22 @@ describe('EmailTemplates', function() {
       var templates = new EmailTemplates();
       assert.equal(Object.prototype.toString(templates), "[object Object]");
     });
+
+    it('swig filters should work', function() {
+      var templates = new EmailTemplates({
+        root: "test/templates/",
+        text: false,
+        filters: {
+          whereproof: function() {
+            return 'the proof is in the pudding';
+          }
+        }
+      });
+
+      templates.render('filter.html', null, function(err, html, text) {
+        assert.equal(html, 'the proof is in the pudding');
+      });
+    });
   });
 
   describe('render', function() {
