@@ -1,5 +1,0 @@
-{% extends "comments.middle.txt" %}
-
-{% block body %}
-  {{ twenty }}
-{% endblock %}

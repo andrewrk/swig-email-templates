@@ -14,11 +14,6 @@ var testMap = {
   'inline_style_link': 'should inline CSS from local CSS using <link>',
   'text_file_alternative': 'should load the text file alternative instead of textifying the HTML',
 
-  'two_vars_content': 'two_vars_content',
-  'for_loop': 'for_loop',
-  'if_statement': 'if_statement',
-  'comments': 'comments',
-  'complex_variable': 'complex_variable',
   'plays': 'plays'
 };
 

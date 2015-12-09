@@ -1,6 +1,0 @@
-{{ scalar }}
-{% for abcd in xyz %}
-  {{ abcd }}
-  {{ lalala }}
-{% endfor %}
-{{ scalar2 }}
