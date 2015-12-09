@@ -31,6 +31,11 @@ function attemptReadFile(path, encoding, cb) {
 describe("EmailTemplates output", function() {
   var templatePath = path.resolve(__dirname, "templates");
   var templates = new EmailTemplates({
+    juice: {
+      webResources: {
+        images: false
+      }
+    },
     root: templatePath,
     rewriteUrl: function (urlString) {
       return urlString + "-append";

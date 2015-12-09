@@ -15,9 +15,10 @@ var EmailTemplates = function (options) {
   options.root = options.root || path.join(__dirname, 'templates');
   options.juice = options.juice || {};
   options.juice.webResources = options.juice.webResources || {};
-  options.juice.webResources.images = options.juice.webResources.images || false;
+  options.juice.webResources.relativeTo = options.juice.webResources.relativeTo || options.root;
 
   swig.setDefaults(options.swig);
+
 
   /*
    * (Internal) Compile and render a swig template
@@ -68,7 +69,6 @@ var EmailTemplates = function (options) {
     var templatePath = path.resolve(options.root, templateName);
 
     context = context || {};
-    options.juice.webResources.relativeTo = options.juice.webResources.relativeTo || options.root;
 
     try {
       var html = self.useTemplate(templatePath, context);
