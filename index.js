@@ -75,10 +75,14 @@ var EmailTemplates = function (options) {
     context = context || {};
     options.juice.webResources.relativeTo = options.juice.webResources.relativeTo || options.root;
 
-    var html = self.useTemplate(templatePath, context);
-    var $ = cheerio.load(html);
-    if (options.rewriteUrl)
-      self.rewriteUrls($, options.rewriteUrl);
+    try {
+      var html = self.useTemplate(templatePath, context);
+      var $ = cheerio.load(html);
+      if (options.rewriteUrl)
+        self.rewriteUrls($, options.rewriteUrl);
+    } catch (err) {
+      return cb(err);
+    }
 
     // Inline resources
     juice.juiceResources($.html(), options.juice, function(err, inlinedHTML) {
