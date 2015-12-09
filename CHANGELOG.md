@@ -1,6 +1,6 @@
 ### 2.0.0
 
- * Major update with support for Node 0.10 up to Node 5
+ * **Support for Node 4+ as well as 0.10 & 0.12**
  * Switch to Cheerio instead of JSDom for compatibility with a wider range of
    Node versions
    - this means that the HTML you provide in your template will be closer to
@@ -15,6 +15,8 @@
    - rewriteUrl is now an option on EmailTemplates instead of an extra argument
      to render()
    - commandline tool no longer takes 'render' as a parameter
+ * Add support for setting filters on the swig instance
+ * Much more comprehensive documentation
 
 ### 1.4.0
 
