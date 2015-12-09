@@ -28,7 +28,7 @@ function attemptReadFile(path, encoding, cb) {
   });
 }
 
-describe("swig-email-templates", function() {
+describe("EmailTemplates output", function() {
   var templatePath = path.resolve(__dirname, "templates");
   var templates = new EmailTemplates({
     root: templatePath,

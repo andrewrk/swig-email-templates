@@ -93,6 +93,4 @@ var EmailTemplates = function (options) {
   }
 }
 
-module.exports = function(options) {
-  return new EmailTemplates(options);
-};
+module.exports = EmailTemplates;
