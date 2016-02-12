@@ -46,7 +46,7 @@ describe("EmailTemplates output", function() {
     var should = testMap[testName];
     it(should + ' (' + testName + ')', createIt(testName));
   }
-  
+
   function createIt(testName) {
     return function(done) {
       this.timeout(4000);

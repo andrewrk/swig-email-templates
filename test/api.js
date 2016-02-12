@@ -35,7 +35,18 @@ describe('EmailTemplates', function() {
       });
     });
 
-    it("should respect the 'text' option", function(done) {
+    it("should return convert HTML to text if no text alternative file is present", function(done) {
+      var templates = new EmailTemplates({
+        root: "test/templates/"
+      });
+
+      templates.render('no_text_file_alternative.html', null, function(err, html, text) {
+        assert.equal(text, 'This is a message with bold , just a tester.');
+        done(err);
+      });
+    });
+
+    it("should respect disabling HTML-to-text", function(done) {
       var templates = new EmailTemplates({
         root: "test/templates/",
         text: false
