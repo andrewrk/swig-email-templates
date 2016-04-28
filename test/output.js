@@ -9,6 +9,7 @@ var fs = require('fs');
 // testName: what it should do
 var testMap = {
   'simple_vars': 'should do simple variable substitution',
+  'rewrite_images': 'should rewrite images url',
   'rewrite_links': 'should rewrite links',
   'inline_style_tag': 'should inline the contents of style tags',
   'inline_style_link': 'should inline CSS from local CSS using <link>',
@@ -37,8 +38,11 @@ describe("EmailTemplates output", function() {
       }
     },
     root: templatePath,
-    rewriteUrl: function (urlString) {
+    rewriteUrl: function(urlString) {
       return urlString + "-append";
+    },
+    rewriteImage: function(urlString) {
+      return urlString + "?append=true";
     }
   });
 
@@ -46,7 +50,7 @@ describe("EmailTemplates output", function() {
     var should = testMap[testName];
     it(should + ' (' + testName + ')', createIt(testName));
   }
-  
+
   function createIt(testName) {
     return function(done) {
       this.timeout(4000);
