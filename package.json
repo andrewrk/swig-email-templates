@@ -19,18 +19,18 @@
     "Andi Sidwell <andi@takkaria.org>"
   ],
   "license": "MIT",
-  "engines" : {
-    "node" : ">=0.10"
+  "engines": {
+    "node": ">=0.10"
   },
   "devDependencies": {
-    "istanbul": "^0.4.1",
-    "mocha": "^2.3.4",
+    "istanbul": "^0.4.3",
+    "mocha": "^2.4.5",
     "pend": "^1.2.0"
   },
   "dependencies": {
-    "cheerio": "^0.19.0",
-    "html-to-text": "^1.5.0",
-    "juice": "^1.8.1",
+    "cheerio": "^0.20.0",
+    "html-to-text": "^2.1.0",
+    "juice": "^1.10.0",
     "optimist": "^0.6.1",
     "swig": "^1.4.2"
   }
