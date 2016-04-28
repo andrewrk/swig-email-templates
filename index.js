@@ -7,7 +7,7 @@ var juice = require('juice');
 var cheerio = require('cheerio');
 var htmlToText = require('html-to-text');
 
-var EmailTemplates = function (options) {
+var EmailTemplates = function(options) {
 
   var self = this;
 
@@ -29,7 +29,7 @@ var EmailTemplates = function (options) {
   /*
    * (Internal) Compile and render a swig template
    */
-  this.useTemplate = function (templatePath, context) {
+  this.useTemplate = function(templatePath, context) {
     var template = swig.compileFile(templatePath);
     return template(context);
   }
@@ -38,7 +38,7 @@ var EmailTemplates = function (options) {
   /*
    * (Internal) Generate text counterpart to HTML template
    */
-  this.generateText = function (templatePath, context, html, cb) {
+  this.generateText = function(templatePath, context, html, cb) {
     if (options.hasOwnProperty('text') && !options.text)
       return cb(null, null);
 
@@ -56,9 +56,21 @@ var EmailTemplates = function (options) {
 
 
   /*
+   * (Internal) Rewrite Images in a Cheerio doc using a given function
+   */
+  this.rewriteImages = function($, rewrite) {
+    $("img").each(function(idx, anchor) {
+      var src = $(anchor).attr('src');
+      if (src !== undefined) {
+        $(anchor).attr('src', rewrite(src));
+      }
+    });
+  }
+
+  /*
    * (Internal) Rewrite URLs in a Cheerio doc using a given function
    */
-  this.rewriteUrls = function ($, rewrite) {
+  this.rewriteUrls = function($, rewrite) {
     $("a").each(function(idx, anchor) {
       var href = $(anchor).attr('href');
       if (href !== undefined) {
@@ -71,7 +83,7 @@ var EmailTemplates = function (options) {
   /*
    * Render a template given 'templateName' and context 'context'.
    */
-  this.render = function (templateName, context, cb) {
+  this.render = function(templateName, context, cb) {
     var templatePath = path.resolve(options.root, templateName);
 
     context = context || {};
@@ -79,6 +91,8 @@ var EmailTemplates = function (options) {
     try {
       var html = self.useTemplate(templatePath, context);
       var $ = cheerio.load(html);
+      if (options.rewriteImage)
+        self.rewriteImages($, options.rewriteImage);
       if (options.rewriteUrl)
         self.rewriteUrls($, options.rewriteUrl);
     } catch (err) {

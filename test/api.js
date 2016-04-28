@@ -48,6 +48,19 @@ describe('EmailTemplates', function() {
     });
   });
 
+  describe('rewriteImages', function() {
+
+    it('should always pass strings to rewriteImage function', function() {
+      var $ = cheerio.load("<img> <img src='image.jpg'>");
+      var templates = new EmailTemplates();
+
+      templates.rewriteImages($, function(url) {
+        assert.equal(typeof url, "string");
+      });
+    });
+
+  });
+
   describe('rewriteUrls', function() {
 
     it('should always pass strings to rewriteUrl function', function() {
