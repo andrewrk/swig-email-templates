@@ -1,3 +1,10 @@
+### 2.1.0
+
+ * Add new option: 'rewrite'
+   - This allows you to read and alter the rendered HTML in whatever way
+     wish before inling resources or generating text alternatives
+ * Update dependencies
+
 ### 2.0.0
 
  * **Support for Node 4+ as well as 0.10 & 0.12**
