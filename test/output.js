@@ -28,8 +28,8 @@ function attemptReadFile(path, encoding, cb) {
   });
 }
 
-describe("EmailTemplates output", function() {
-  var templatePath = path.resolve(__dirname, "templates");
+describe('EmailTemplates output', function() {
+  var templatePath = path.resolve(__dirname, 'templates');
   var templates = new EmailTemplates({
     juice: {
       webResources: {
@@ -37,8 +37,8 @@ describe("EmailTemplates output", function() {
       }
     },
     root: templatePath,
-    rewriteUrl: function (urlString) {
-      return urlString + "-append";
+    rewriteUrl: function(urlString) {
+      return urlString + '-append';
     }
   });
 

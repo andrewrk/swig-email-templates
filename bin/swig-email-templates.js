@@ -25,7 +25,7 @@ var opts = optimist
     .alias('c', 'context')
     .alias('r', 'root')
     .default('r', '.')
-    .check(function (argv) {
+    .check(function(argv) {
       if (argv.v) {
         return;
       }
@@ -66,9 +66,9 @@ if (argv.o !== 'stdout') {
     }
   }
 
-  out = function (file, str, filetype) {
-    if (typeof filetype !== "undefined") {
-      file = file.replace(/\.[^/.]+$/, "") + filetype;
+  out = function(file, str, filetype) {
+    if (typeof filetype !== 'undefined') {
+      file = file.replace(/\.[^/.]+$/, '') + filetype;
     } else {
       file = path.basename(file);
     }
@@ -76,20 +76,20 @@ if (argv.o !== 'stdout') {
     console.log('Wrote', argv.o + file);
   };
 } else {
-  out = function (file, str) {
+  out = function(file, str) {
     console.log(str);
   }
 }
 
 // Template root
-var root = ".";
+var root = '.';
 if (argv.r && argv.r !== 'templates') {
   root = path.normalize(argv.r);
 }
 
 var templates = new EmailTemplates({ root: root });
 
-argv._.forEach(function (file) {
+argv._.forEach(function(file) {
   templates.render(file, ctx, function(err, html) {
     if (err) {
       console.log(err);
