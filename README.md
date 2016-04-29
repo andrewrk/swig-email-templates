@@ -12,14 +12,14 @@ Inspired by [niftylettuce/node-email-templates](https://github.com/niftylettuce/
 
 ## Features
 
- * Uses [swig](https://github.com/paularmstrong/swig/), which supports
+ * Uses [swig], which supports
    [Django-inspired template inheritance](https://docs.djangoproject.com/en/dev/topics/templates/#template-inheritance).
- * Uses [juice](https://github.com/Automattic/juice), which takes an HTML
+ * Uses [juice], which takes an HTML
    file and inlines all the `<link rel="stylesheet">`s and the `<style>`s.
  * URL rewrite support - you can provide a function to rewrite your links.
- * Text emails - for a template name passed into render(), if a file exists 
+ * Text emails - for a template name passed into render(), if a file exists
    with the same name but a .txt extension it will be rendered separately.
-   If the .txt file does not exist, html-to-text will auto-generate a text 
+   If the .txt file does not exist, [html-to-text] will auto-generate a text
    version of the html file. This can be disabled with the option `text: false`.
 
 
@@ -73,29 +73,33 @@ var EmailTemplates = require('swig-email-templates');
 var templates = new EmailTemplates();
 ```
 
-#### Options
+To set options, pass an object to the constructor.  It can have the following keys:
 
-##### root (string)
+#### root (string)
 
 Path to template files.  Defaults to ```path.join(__dirname, 'templates')```
 
-##### swig (object)
+#### swig (object)
 
 Swig options.  Gets passed to swig.setDefaults().  [See swig documention for more information](http://paularmstrong.github.io/swig/docs/api/#SwigOpts).
 
-##### filters (object)
+#### filters (object)
 
 An object of Swig filters to set.  Format: { name1: method1, name2: method2 }.  For more information [see Swig documentation for setFilter()](http://paularmstrong.github.io/swig/docs/api/#setFilter).
 
-##### juice (object)
+#### juice (object)
 
 Juice options. [See juice documentation for more inforation](https://github.com/Automattic/juice#options).
 
-##### rewriteUrl (function (string) => string)
+#### rewrite (function(cheerio instance))
+
+After rendering the template and running the rewriteUrl function (see below), but before inlining resources, this function will be called if provided.  It will be passed a [cheerio] instance and can alter its content.  Cheerio instances are modified in-place so it does not need to return a value.
+
+#### rewriteUrl (function (string) => string)
 
 Each ```a href``` attribute in the output HTML will have its value replaced by the result of calling this function with the original href value.
 
-##### text (boolean)
+#### text (boolean)
 
 Whether to generate text alternative to HTML.  Defaults to ```true```.
 
@@ -120,6 +124,11 @@ new EmailTemplates({
   },
   rewriteUrl: function (url) {
     return url + 'appendage';
+  },
+  rewrite: function($) {
+    $("img").each(function(idx, anchor) {
+      $(anchor).attr('src', 'no-img.png');
+    });
   }
 })
 ```
@@ -141,7 +150,7 @@ templates.render('template.html', { user: 55 }, function (err, html, text) {
 
 #### Behaviour of text templates
 
-If the 'text' option is true (see above), then swig-email-templates will attempt to create a text equivalent as well as your HTML.  By default, this will be by rendering the HTML output as text using [html-to-text](https://www.npmjs.com/package/html-to-text).
+If the 'text' option is true (see above), then swig-email-templates will attempt to create a text equivalent as well as your HTML.  By default, this will be by rendering the HTML output as text using [html-to-text].
 
 You can provide your own text template to override this behaviour.  This should have the same basename as your HTML template but end in '.txt' instead of '.html'.  For example, if your HTML template is 'template.html' then the text version should be 'template.txt'.  This will receive the same context as the HTML template.
 
@@ -184,3 +193,9 @@ swig-email-templates render email1.html email2.html -o output/ -j context/main.j
 ```
 npm test
 ```
+
+
+  [swig]: https://github.com/paularmstrong/swig/
+  [cheerio]: https://npmjs.com/package/cheerio
+  [juice]: https://github.com/Automattic/juice
+  [html-to-text]: https://www.npmjs.com/package/html-to-text
