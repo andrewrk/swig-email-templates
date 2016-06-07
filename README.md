@@ -181,10 +181,10 @@ The options are:
 
 ### Example
 
-The following examples renders two files, `email1.html` and `email2.html`, which are both contained in the cwd. It uses the context stored in `context/main.json` for rendering, and places the results in the folder `output`.
+The following example renders two files, `email1.html` and `email2.html`, which are both contained in the cwd. It uses the context stored in `context/main.json` for rendering, and places the results in the folder `output`.
 
 ```
-swig-email-templates render email1.html email2.html -o output/ -j context/main.json
+swig-email-templates email1.html email2.html -o output/ -j context/main.json
 ```
 
 
