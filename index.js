@@ -74,7 +74,7 @@ var EmailTemplates = function(options) {
 
     try {
       var html = self.useTemplate(templatePath, context);
-      var $ = cheerio.load(html);
+      var $ = cheerio.load(html, { decodeEntities: false });
       if (options.rewriteUrl)
         self.rewriteUrls($, options.rewriteUrl);
       if (options.rewrite)
