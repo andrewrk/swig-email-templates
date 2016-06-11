@@ -1,3 +1,14 @@
+### 3.0.0
+
+ * Upgrade to Juice 2.  This changes various defaults for inlining styles.
+   See the [list of changes in Juice](j2changes) for more information.  These
+   are mostly changes around preserving `@font-face` and `@media`, and
+   applying widths/heights to tables.
+ * Fix Outlook-breaking cheerio config (issue #34)
+ * Update README for command-line utility
+
+[j2changes]: https://github.com/Automattic/juice/commit/a4cf6fdb671be56e6a01fd740f6460849b8813df
+
 ### 2.1.0
 
  * Add new option: 'rewrite'
