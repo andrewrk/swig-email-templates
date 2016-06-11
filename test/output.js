@@ -13,8 +13,6 @@ var testMap = {
   'inline_style_tag': 'should inline the contents of style tags',
   'inline_style_link': 'should inline CSS from local CSS using <link>',
   'text_file_alternative': 'should load the text file alternative instead of textifying the HTML',
-
-  'plays': 'plays'
 };
 
 // Attempt to
