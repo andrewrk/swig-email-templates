@@ -107,7 +107,7 @@ var EmailTemplates = function(options) {
       self.generateText(templatePath, context, html, function(err, text) {
         if (err) return cb(err);
 
-        self.generateSubject(templatePath, context, html, function(err, subject) {
+        self.generateSubject(templatePath, context, function(err, subject) {
           if (err) return cb(err);
 
           cb(null, inlinedHTML, text, subject);
