@@ -1,3 +1,6 @@
+### 3.1.0
+* Add support for email subject.
+
 ### 3.0.0
 
  * Upgrade to Juice 2.  This changes various defaults for inlining styles.
