@@ -53,6 +53,23 @@ var EmailTemplates = function(options) {
   }
 
   /*
+   * (Internal) Generate text counterpart to HTML template
+   */
+  this.generateSubject = function(templatePath, context, cb) {
+
+    var textFilename = path.basename(templatePath, path.extname(templatePath)) + '.subject.txt';
+    var textPath = path.resolve(path.dirname(templatePath), textFilename);
+
+    fs.exists(textPath, function(exists) {
+      if (exists) {
+        cb(null, self.useTemplate(textPath, context));
+      } else {
+        cb(null, null);
+      }
+    });
+  }
+
+  /*
    * (Internal) Rewrite URLs in a Cheerio doc using a given function
    */
   this.rewriteUrls = function($, rewrite) {
@@ -90,7 +107,11 @@ var EmailTemplates = function(options) {
       self.generateText(templatePath, context, html, function(err, text) {
         if (err) return cb(err);
 
-        cb(null, inlinedHTML, text);
+        self.generateSubject(templatePath, context, html, function(err, subject) {
+          if (err) return cb(err);
+
+          cb(null, inlinedHTML, text, subject);
+        });
       });
     });
   }
