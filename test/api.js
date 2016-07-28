@@ -64,7 +64,7 @@ describe('EmailTemplates', function() {
       });
 
       templates.render('no_text_file_alternative.html', null, function(err, html, text) {
-        assert.equal(text, 'This is a message with bold , just a tester.');
+        assert.equal(text, 'This is a message with bold, just a tester.');
         done(err);
       });
     })

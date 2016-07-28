@@ -54,6 +54,7 @@ describe('EmailTemplates output', function() {
 
       var expectedHtml, actualHtml;
       var expectedText, actualText;
+      var expectedSubject, actualSubject;
 
       var pend = new Pend();
 
@@ -65,9 +66,10 @@ describe('EmailTemplates output', function() {
           if (err) return cb(err);
           if (data) context = JSON.parse(data);
 
-          templates.render(testName + '.html', context, function(err, html, text) {
+          templates.render(testName + '.html', context, function(err, html, text, subject) {
             actualHtml = html;
             actualText = text;
+            actualSubject = subject;
             cb(err);
           });
         });
@@ -89,6 +91,14 @@ describe('EmailTemplates output', function() {
         });
       });
 
+      // Try loading the expected text (may not exist)
+      pend.go(function(cb) {
+        attemptReadFile(testPath + '.out.subject.txt', 'utf8', function(err, subject) {
+          expectedSubject = subject;
+          cb(err);
+        });
+      });
+
       // And when they're all done...
       pend.wait(function(err) {
         if (err) return done(err);
@@ -96,6 +106,8 @@ describe('EmailTemplates output', function() {
         if (expectedHtml)
           assert.strictEqual(actualHtml.trim(), expectedHtml.trim());
         if (expectedText)
+          assert.strictEqual(actualText.trim(), expectedText.trim());
+        if (expectedSubject)
           assert.strictEqual(actualText.trim(), expectedText.trim());
 
         done();
