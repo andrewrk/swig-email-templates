@@ -47,13 +47,13 @@ var context = {
   meatballCount: 9001
 };
 
-templates.render('meatball-sandwich.html', context, function(err, html, text) {
+templates.render('meatball-sandwich.html', context, function(err, html, text, subject) {
 
   // Send email
   transporter.sendMail({
       from: 'sender@address',
       to: 'receiver@address',
-      subject: 'Meatball delivery',
+      subject: subject,
       html: html,
       text: text
   });
@@ -81,7 +81,7 @@ Path to template files.  Defaults to ```path.join(__dirname, 'templates')```
 
 #### swig (object)
 
-Swig options.  Gets passed to swig.setDefaults().  [See swig documention for more information](http://paularmstrong.github.io/swig/docs/api/#SwigOpts).
+Swig options.  Gets passed to swig.setDefaults().  [See swig documentation for more information](http://paularmstrong.github.io/swig/docs/api/#SwigOpts).
 
 #### filters (object)
 
@@ -89,7 +89,7 @@ An object of Swig filters to set.  Format: { name1: method1, name2: method2 }.  
 
 #### juice (object)
 
-Juice options. [See juice documentation for more inforation](https://github.com/Automattic/juice#options).
+Juice options. [See juice documentation for more information](https://github.com/Automattic/juice#options).
 
 #### rewrite (function(cheerio instance))
 
@@ -135,16 +135,17 @@ new EmailTemplates({
 
 ### render(templateName, context, callback)
 
-Render a template with templateName, with the context provided.  Callback takes three parameters: (error, html, text).
+Render a template with templateName, with the context provided.  Callback takes three parameters: (error, html, text, subject).
 
 Example:
 
 ```js
 var EmailTemplates = require('swig-email-templates');
 var templates = new EmailTemplates();
-templates.render('template.html', { user: 55 }, function (err, html, text) {
+templates.render('template.html', { user: 55 }, function (err, html, text, subject) {
   // html is inlined html
   // text is text equivalent
+  // subject is parsed subject template or null if not found
 })
 ```
 
@@ -156,7 +157,11 @@ You can provide your own text template to override this behaviour.  This should 
 
 If the 'text' option is false, then no text alternative will be generated and the callback passed to the EmailTemplate.render() function will receive a falsy value instead of text as its third argument.
 
+#### Behaviour of subject templates
 
+swig-email-templates will attempt to create a text equivalent as well as your HTML. This template should have the same basename as your HTML template but end in `.subject.txt`. This will receive the same context as the HTML template.
+
+Using subject templates, you can generate subject that contains variables.
 
 ## Command Line
 
