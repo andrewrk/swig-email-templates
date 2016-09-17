@@ -1,5 +1,15 @@
-### 3.1.0
-* Add support for email subject.
+### 4.0.0
+
+ * **Warning:** swig is no longer maintained.  Use this package at your
+   own risk.  You may wish to switch to [nunjucks] and for emails, use
+   [email-templates].
+ * Upgrade to Juice 3.  This brings changes from its dependency
+   [web-resource-inliner].
+ * Add support for email subject.
+
+[nunjucks]: https://mozilla.github.io/nunjucks/
+[email-templates]: https://www.npmjs.com/package/email-templates
+[web-resource-inliner]: https://www.npmjs.com/package/web-resource-inliner
 
 ### 3.0.0
 
