@@ -24,13 +24,13 @@
   },
   "devDependencies": {
     "istanbul": "^0.4.3",
-    "mocha": "^2.4.5",
+    "mocha": "^3.0.2",
     "pend": "^1.2.0"
   },
   "dependencies": {
-    "cheerio": "^0.20.0",
+    "cheerio": "^0.22.0",
     "html-to-text": "^2.1.0",
-    "juice": "^2.0.0",
+    "juice": "^3.0.0",
     "optimist": "^0.6.1",
     "swig": "^1.4.2"
   }
