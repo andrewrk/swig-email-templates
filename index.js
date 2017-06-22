@@ -2,7 +2,7 @@
 
 var path = require('path');
 var fs = require('fs');
-var swig = require('swig');
+var swig = require('swig-templates');
 var juice = require('juice');
 var cheerio = require('cheerio');
 var htmlToText = require('html-to-text');
