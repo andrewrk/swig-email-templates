@@ -1,5 +1,5 @@
 var EmailTemplates = require('../');
-var swig = require('swig');
+var swig = require('swig-templates');
 var assert = require('assert');
 var path = require('path');
 var Pend = require('pend');

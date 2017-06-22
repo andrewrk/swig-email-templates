@@ -32,6 +32,6 @@
     "html-to-text": "^2.1.0",
     "juice": "^3.0.0",
     "optimist": "^0.6.1",
-    "swig": "^1.4.2"
+    "swig-templates": "^2.0.2"
   }
 }
