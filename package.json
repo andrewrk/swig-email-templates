@@ -29,8 +29,8 @@
   },
   "dependencies": {
     "cheerio": "^0.22.0",
-    "html-to-text": "^2.1.0",
-    "juice": "^3.0.0",
+    "html-to-text": "^3.3.0",
+    "juice": "^4.1.0",
     "optimist": "^0.6.1",
     "swig-templates": "^2.0.2"
   }
