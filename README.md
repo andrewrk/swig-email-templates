@@ -81,11 +81,11 @@ Path to template files.  Defaults to ```path.join(__dirname, 'templates')```
 
 #### swig (object)
 
-Swig options.  Gets passed to swig.setDefaults().  [See swig documentation for more information](http://paularmstrong.github.io/swig/docs/api/#SwigOpts).
+Swig options.  Gets passed to swig.setDefaults().  [See swig documentation for more information](https://node-swig.github.io/swig-templates/docs/api/#SwigOpts).
 
 #### filters (object)
 
-An object of Swig filters to set.  Format: { name1: method1, name2: method2 }.  For more information [see Swig documentation for setFilter()](http://paularmstrong.github.io/swig/docs/api/#setFilter).
+An object of Swig filters to set.  Format: { name1: method1, name2: method2 }.  For more information [see Swig documentation for setFilter()](https://node-swig.github.io/swig-templates/docs/api/#setFilter).
 
 #### juice (object)
 
