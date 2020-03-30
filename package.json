@@ -23,15 +23,15 @@
     "node": ">=0.10"
   },
   "devDependencies": {
-    "istanbul": "^0.4.3",
-    "mocha": "^3.0.2",
+    "istanbul": "^0.4.5",
+    "mocha": "^7.1.1",
     "pend": "^1.2.0"
   },
   "dependencies": {
     "cheerio": "^0.22.0",
-    "html-to-text": "^3.3.0",
-    "juice": "^4.1.0",
+    "html-to-text": "^5.1.1",
+    "juice": "^6.0.0",
     "optimist": "^0.6.1",
-    "swig-templates": "^2.0.2"
+    "swig-templates": "^2.0.3"
   }
 }
