@@ -1,3 +1,10 @@
+### 6.0.0
+
+ * Upgrade dependencies: juice 4.1.0 -> 7.0.0, swig-templates 2.0.2 -> 2.0.3,
+   html-to-text 3.3.0 -> 6.0.0
+ * Check in package lockfile
+
+
 ### 4.0.0
 
  * **Warning:** swig is no longer maintained.  Use this package at your
