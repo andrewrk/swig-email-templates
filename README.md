@@ -1,9 +1,5 @@
 # swig-email-templates
 
-[![Build Status](https://travis-ci.org/andrewrk/swig-email-templates.png?branch=master)](https://travis-ci.org/andrewrk/swig-email-templates)
-[![Dependency Status](https://david-dm.org/andrewrk/swig-email-templates.svg)](https://david-dm.org/andrewrk/swig-email-templates)
-[![devDependency Status](https://david-dm.org/andrewrk/swig-email-templates/dev-status.svg)](https://david-dm.org/andrewrk/swig-email-templates#info=devDependencies)
-
 **This package is unmaintained; please volunteer if you want it to not rely on outdated dependencies.**
 
 swig-email-templates is a Node.js module for rendering emails with Swig templates and
