@@ -22,14 +22,14 @@
     "node": ">=10"
   },
   "devDependencies": {
-    "mocha": "^8.2.1",
+    "mocha": "^10.0.0",
     "nyc": "^15.1.0",
     "pend": "^1.2.0"
   },
   "dependencies": {
     "cheerio": "^0.22.0",
-    "html-to-text": "^6.0.0",
-    "juice": "^7.0.0",
+    "html-to-text": "^8.2.0",
+    "juice": "^8.0.0",
     "optimist": "^0.6.1",
     "swig-templates": "^2.0.3"
   }
