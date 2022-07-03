@@ -31,7 +31,7 @@
     "cheerio": "^0.22.0",
     "html-to-text": "^8.2.0",
     "juice": "^8.0.0",
-    "optimist": "^0.6.1",
-    "swig-templates": "^2.0.3"
+    "swig-templates": "^2.0.3",
+    "yargs": "^17.5.1"
   }
 }

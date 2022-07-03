@@ -1,42 +1,37 @@
 #!/usr/bin/env node
 
-var EmailTemplates = require('../index.js')
-var optimist = require('optimist')
-var fs = require('fs')
-var path = require('path')
+const fs = require('fs')
+const path = require('path')
+const yargs = require('yargs/yargs')
+const { hideBin } = require('yargs/helpers')
+const EmailTemplates = require('../index.js')
 
-var opts = optimist
-    .usage('\n Usage:\n' +
-      '    $0 [files] [options]\n'
-    )
-    .describe({
-        v: 'Show the swig-email-templates version number.',
-        o: 'Output location.',
-        r: 'Root location of your templates.',
-        h: 'Show this help screen.',
-        j: 'Variable context as a JSON file.',
-        c: 'Variable context as a CommonJS-style file, if -j not provided'
-    })
-    .alias('v', 'version')
-    .alias('o', 'output')
-    .default('o', 'stdout')
+const argv = yargs(hideBin(process.argv))
+    .usage('Usage: $0 [files] [options]')
+    .help('h')
     .alias('h', 'help')
-    .alias('j', 'json')
-    .alias('c', 'context')
+    .alias('v', 'version')
+    .describe('o', 'Output location')
+    .alias('o', 'output')
+    .describe('r', 'Root location of your templates')
     .alias('r', 'root')
+    .describe('j', 'Variable context as a JSON file')
+    .alias('j', 'json')
+    .describe(
+        'c',
+        'Variable context as a CommonJS-style file, if -j not provided'
+    )
+    .alias('c', 'context')
+    .default('o', 'stdout')
     .default('r', '.')
-    .check(function(argv) {
-        if (argv.v) {
-            return
+    .check((argv) => {
+        if (argv._.length === 0) {
+            throw new Error('** You must provide files to process')
         }
 
-        if (!argv._.length || argv.h) {
-            optimist.showHelp()
-            process.exit(0)
-        }
+        return true
     })
-
-var argv = opts.argv
+    .argv
 
 // Version number
 if (argv.v) {
@@ -45,7 +40,7 @@ if (argv.v) {
 }
 
 // JSON input
-var ctx
+let ctx
 if (argv.j) {
     ctx = JSON.parse(fs.readFileSync(argv.j, 'utf8'))
 } else if (argv.c) {
@@ -53,7 +48,7 @@ if (argv.j) {
 }
 
 // Output location
-var out
+let out
 if (argv.o !== 'stdout') {
     argv.o += '/'
     argv.o = path.normalize(argv.o)
@@ -66,7 +61,7 @@ if (argv.o !== 'stdout') {
         }
     }
 
-    out = function(file, str, filetype) {
+    out = function (file, str, filetype) {
         if (typeof filetype !== 'undefined') {
             file = file.replace(/\.[^/.]+$/, '') + filetype
         } else {
@@ -76,21 +71,17 @@ if (argv.o !== 'stdout') {
         console.log('Wrote', argv.o + file)
     }
 } else {
-    out = function(file, str) {
+    out = function (file, str) {
         console.log(str)
     }
 }
 
-// Template root
-var root = '.'
-if (argv.r && argv.r !== 'templates') {
-    root = path.normalize(argv.r)
-}
+const templates = new EmailTemplates({
+    root: argv.r && argv.r !== 'templates' ? path.normalize(argv.r) : '.',
+})
 
-var templates = new EmailTemplates({ root: root })
-
-argv._.forEach(function(file) {
-    templates.render(file, ctx, function(err, html) {
+argv._.forEach(function (file) {
+    templates.render(file, ctx, function (err, html) {
         if (err) {
             console.log(err)
         } else {
