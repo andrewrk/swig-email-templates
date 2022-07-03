@@ -1,9 +1,16 @@
+### 7.0.0
+
+ * Provide async version of main render method
+ * Depend on yargs rather than minimist, removing dependency on an unmaintained package
+ * Upgrade dependencies: html-to-text 6 -> 8, juice 7 -> 8
+ * Support only Node 14, 16, 18
+ * Internal refactoring to a more modern code style
+
 ### 6.0.0
 
  * Upgrade dependencies: juice 4.1.0 -> 7.0.0, swig-templates 2.0.2 -> 2.0.3,
    html-to-text 3.3.0 -> 6.0.0
  * Check in package lockfile
-
 
 ### 4.0.0
 
