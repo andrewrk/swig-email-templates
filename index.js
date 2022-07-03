@@ -1,113 +1,101 @@
 'use strict';
 
-var path = require('path');
-var fs = require('fs');
-var swig = require('swig-templates');
-var juice = require('juice');
-var cheerio = require('cheerio');
-var htmlToText = require('html-to-text');
+const path = require('path');
+const fs = require('fs');
+const swig = require('swig-templates');
+const juice = require('juice');
+const cheerio = require('cheerio');
+const htmlToText = require('html-to-text');
 
-var EmailTemplates = function(options) {
+class EmailTemplates {
+  constructor(options = {}) {
+    this.options = options;
+    this.options.root = options.root || path.join(__dirname, 'templates');
+    this.options.filters = this.options.filters || {};
+    this.options.juice = options.juice || {};
+    this.options.juice.webResources = options.juice.webResources || {};
+    this.options.juice.webResources.relativeTo = options.juice.webResources.relativeTo || options.root;
 
-  var self = this;
+    swig.setDefaults(this.options.swig);
 
-  options = options || {}
-  options.root = options.root || path.join(__dirname, 'templates');
-  options.juice = options.juice || {};
-  options.juice.webResources = options.juice.webResources || {};
-  options.juice.webResources.relativeTo = options.juice.webResources.relativeTo || options.root;
-
-  swig.setDefaults(options.swig);
-
-  if (options.filters) {
-    for (var filter in options.filters) {
-      swig.setFilter(filter, options.filters[filter]);
+    for (const filter in this.options.filters) {
+      swig.setFilter(filter, this.options.filters[filter]);
     }
   }
 
-  /*
-   * (Internal) Compile and render a swig template
-   */
-  this.useTemplate = function(templatePath, context) {
-    var template = swig.compileFile(templatePath);
-    return template(context);
+  /** (Internal) Compile and render a swig template */
+  renderTemplate(path, context) {
+    return swig.compileFile(path)(context);
   }
 
-  /*
-   * (Internal) Generate text counterpart to HTML template
-   */
-  this.generateText = function(templatePath, context, html, cb) {
-    if (options.hasOwnProperty('text') && !options.text)
+  /** (Internal) Generate text counterpart to HTML template */
+  generateText(templatePath, context, html, cb) {
+    if ('text' in this.options && !this.options.text) {
       return cb(null, null);
+    }
 
-    var textFilename = path.basename(templatePath, path.extname(templatePath)) + '.txt';
-    var textPath = path.resolve(path.dirname(templatePath), textFilename);
+    const textFilename = path.basename(templatePath, path.extname(templatePath)) + '.txt';
+    const textPath = path.resolve(path.dirname(templatePath), textFilename);
 
-    fs.exists(textPath, function(exists) {
+    fs.exists(textPath, (exists) => {
       if (exists) {
-        cb(null, self.useTemplate(textPath, context));
+        cb(null, this.renderTemplate(textPath, context));
       } else {
         cb(null, htmlToText.fromString(html));
       }
     });
   }
 
-  /*
-   * (Internal) Generate text counterpart to HTML template
-   */
-  this.generateSubject = function(templatePath, context, cb) {
+  /** (Internal) Generate text counterpart to HTML template */
+  generateSubject(templatePath, context, cb) {
+    const textFilename = path.basename(templatePath, path.extname(templatePath)) + '.subject.txt';
+    const textPath = path.resolve(path.dirname(templatePath), textFilename);
 
-    var textFilename = path.basename(templatePath, path.extname(templatePath)) + '.subject.txt';
-    var textPath = path.resolve(path.dirname(templatePath), textFilename);
-
-    fs.exists(textPath, function(exists) {
+    fs.exists(textPath, (exists) => {
       if (exists) {
-        cb(null, self.useTemplate(textPath, context));
+        cb(null, this.renderTemplate(textPath, context));
       } else {
         cb(null, null);
       }
     });
   }
 
-  /*
-   * (Internal) Rewrite URLs in a Cheerio doc using a given function
-   */
-  this.rewriteUrls = function($, rewrite) {
-    $("a").each(function(idx, anchor) {
-      var href = $(anchor).attr('href');
+  /** (Internal) Rewrite URLs in a Cheerio doc using a given function */
+  rewriteUrls($, rewrite) {
+    $('a').each(function(idx, anchor) {
+      const href = $(anchor).attr('href');
       if (href !== undefined) {
         $(anchor).attr('href', rewrite(href));
       }
     });
   }
 
-  /*
-   * Render a template given 'templateName' and context 'context'.
-   */
-  this.render = function(templateName, context, cb) {
-    var templatePath = path.resolve(options.root, templateName);
+  /** Render a template given 'templateName' and context 'context' */
+  render(templateName, context = {}, cb) {
+    const templatePath = path.resolve(this.options.root, templateName);
 
-    context = context || {};
-
+    let html, $;
     try {
-      var html = self.useTemplate(templatePath, context);
-      var $ = cheerio.load(html, { decodeEntities: false });
-      if (options.rewriteUrl)
-        self.rewriteUrls($, options.rewriteUrl);
-      if (options.rewrite)
-        options.rewrite($);
+      html = this.renderTemplate(templatePath, context);
+      $ = cheerio.load(html, { decodeEntities: false });
+      if (this.options.rewriteUrl) {
+        this.rewriteUrls($, this.options.rewriteUrl);
+      }
+      if (this.options.rewrite) {
+        this.options.rewrite($);
+      }
     } catch (err) {
       return cb(err);
     }
 
     // Inline resources
-    juice.juiceResources($.html(), options.juice, function(err, inlinedHTML) {
+    juice.juiceResources($.html(), this.options.juice, (err, inlinedHTML) => {
       if (err) return cb(err);
 
-      self.generateText(templatePath, context, html, function(err, text) {
+      this.generateText(templatePath, context, html, (err, text) => {
         if (err) return cb(err);
 
-        self.generateSubject(templatePath, context, function(err, subject) {
+        this.generateSubject(templatePath, context, (err, subject) => {
           if (err) return cb(err);
 
           cb(null, inlinedHTML, text, subject);
