@@ -1,11 +1,13 @@
 'use strict'
 
-const path = require('path')
-const fs = require('fs')
+const path = require('node:path')
+const { access } = require('node:fs/promises')
+const { constants } = require('node:fs')
 const swig = require('swig-templates')
 const juice = require('juice')
 const cheerio = require('cheerio')
 const htmlToText = require('html-to-text')
+const util = require('util')
 
 class EmailTemplates {
     constructor(options = {}) {
@@ -14,7 +16,8 @@ class EmailTemplates {
         this.options.filters = this.options.filters || {}
         this.options.juice = options.juice || {}
         this.options.juice.webResources = options.juice.webResources || {}
-        this.options.juice.webResources.relativeTo = options.juice.webResources.relativeTo || options.root
+        this.options.juice.webResources.relativeTo =
+            options.juice.webResources.relativeTo || options.root
 
         swig.setDefaults(this.options.swig)
 
@@ -23,46 +26,50 @@ class EmailTemplates {
         }
     }
 
-    /** (Internal) Compile and render a swig template */
-    renderTemplate(path, context) {
+    /** Compile and render a swig template */
+    _renderTemplate(path, context) {
         return swig.compileFile(path)(context)
     }
 
-    /** (Internal) Generate text counterpart to HTML template */
-    generateText(templatePath, context, html, cb) {
+    /** Generate text counterpart to HTML template */
+    async _generateText(templatePath, context, html) {
         if ('text' in this.options && !this.options.text) {
-            return cb(null, null)
+            return null
         }
 
-        const textFilename = path.basename(templatePath, path.extname(templatePath)) + '.txt'
+        const textFilename =
+            path.basename(templatePath, path.extname(templatePath)) + '.txt'
         const textPath = path.resolve(path.dirname(templatePath), textFilename)
 
-        fs.exists(textPath, (exists) => {
-            if (exists) {
-                cb(null, this.renderTemplate(textPath, context))
-            } else {
-                cb(null, htmlToText.fromString(html))
-            }
-        })
+        try {
+            await access(textPath, constants.R_OK)
+            return this._renderTemplate(textPath, context)
+        } catch (err) {
+            return htmlToText.fromString(html)
+        }
     }
 
-    /** (Internal) Generate text counterpart to HTML template */
-    generateSubject(templatePath, context, cb) {
-        const textFilename = path.basename(templatePath, path.extname(templatePath)) + '.subject.txt'
-        const textPath = path.resolve(path.dirname(templatePath), textFilename)
+    /** Generate text counterpart to HTML template */
+    async _generateSubject(templatePath, context) {
+        const subjectFilename =
+            path.basename(templatePath, path.extname(templatePath)) +
+            '.subject.txt'
+        const subjectPath = path.resolve(
+            path.dirname(templatePath),
+            subjectFilename
+        )
 
-        fs.exists(textPath, (exists) => {
-            if (exists) {
-                cb(null, this.renderTemplate(textPath, context))
-            } else {
-                cb(null, null)
-            }
-        })
+        try {
+            await access(subjectPath, constants.R_OK)
+            return this._renderTemplate(subjectPath, context)
+        } catch (err) {
+            return null
+        }
     }
 
-    /** (Internal) Rewrite URLs in a Cheerio doc using a given function */
-    rewriteUrls($, rewrite) {
-        $('a').each(function(idx, anchor) {
+    /** Rewrite URLs in a Cheerio doc using a given function */
+    _rewriteUrls($, rewrite) {
+        $('a').each(function (idx, anchor) {
             const href = $(anchor).attr('href')
             if (href !== undefined) {
                 $(anchor).attr('href', rewrite(href))
@@ -70,38 +77,38 @@ class EmailTemplates {
         })
     }
 
-    /** Render a template given 'templateName' and context 'context' */
-    render(templateName, context = {}, cb) {
+    async _renderPromise(templateName, context) {
         const templatePath = path.resolve(this.options.root, templateName)
+        const html = this._renderTemplate(templatePath, context)
+        const $ = cheerio.load(html, { decodeEntities: false })
 
-        let html, $
-        try {
-            html = this.renderTemplate(templatePath, context)
-            $ = cheerio.load(html, { decodeEntities: false })
-            if (this.options.rewriteUrl) {
-                this.rewriteUrls($, this.options.rewriteUrl)
-            }
-            if (this.options.rewrite) {
-                this.options.rewrite($)
-            }
-        } catch (err) {
-            return cb(err)
+        if (this.options.rewriteUrl) {
+            this._rewriteUrls($, this.options.rewriteUrl)
+        }
+        if (this.options.rewrite) {
+            this.options.rewrite($)
         }
 
-        // Inline resources
-        juice.juiceResources($.html(), this.options.juice, (err, inlinedHTML) => {
-            if (err) return cb(err)
+        const juiceResources = util.promisify(juice.juiceResources)
+        const [inlinedHTML, text, subject] = await Promise.all([
+            juiceResources($.html(), this.options.juice),
+            this._generateText(templatePath, context, html),
+            this._generateSubject(templatePath, context),
+        ])
+        return { html: inlinedHTML, text, subject }
+    }
 
-            this.generateText(templatePath, context, html, (err, text) => {
-                if (err) return cb(err)
-
-                this.generateSubject(templatePath, context, (err, subject) => {
-                    if (err) return cb(err)
-
-                    cb(null, inlinedHTML, text, subject)
+    /** Render a template given 'templateName' and context 'context' */
+    render(templateName, context = {}, cb) {
+        if (!cb) {
+            this._renderPromise(templateName, context)
+        } else {
+            this._renderPromise(templateName, context)
+                .then(({ html, text, subject }) => cb(null, html, text, subject))
+                .catch((err) => {
+                    cb(err)
                 })
-            })
-        })
+        }
     }
 }
 

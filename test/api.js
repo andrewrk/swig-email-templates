@@ -87,7 +87,7 @@ describe('EmailTemplates', function() {
             var $ = cheerio.load('<a>testing</a> <a href="">testing-2</a>')
             var templates = new EmailTemplates()
 
-            templates.rewriteUrls($, function(url) {
+            templates._rewriteUrls($, function(url) {
                 assert.equal(typeof url, 'string')
             })
         })
