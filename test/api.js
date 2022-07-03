@@ -11,8 +11,8 @@ describe('EmailTemplates', function() {
     })
 
     describe('if I set options...', function() {
-        it('if I provide a swig filter it should be used', function(done) {
-            var templates = new EmailTemplates({
+        it('if I provide a swig filter it should be used', async function() {
+            const templates = new EmailTemplates({
                 root: 'test/templates/',
                 text: false,
                 filters: {
@@ -22,10 +22,8 @@ describe('EmailTemplates', function() {
                 }
             })
 
-            templates.render('filter.html', null, function(err, html) {
-                assert.equal(html, 'the proof is in the pudding')
-                done()
-            })
+            const { html } = await templates.render('filter.html', null)
+            assert.equal(html, 'the proof is in the pudding')
         })
 
         describe('if I provide a rewrite function', function() {
@@ -58,27 +56,23 @@ describe('EmailTemplates', function() {
             })
         })
 
-        it('should return convert HTML to text if no text alternative file is present', function(done) {
-            var templates = new EmailTemplates({
+        it('should return convert HTML to text if no text alternative file is present', async function() {
+            const templates = new EmailTemplates({
                 root: 'test/templates/'
             })
 
-            templates.render('no_text_file_alternative.html', null, function(err, html, text) {
-                assert.equal(text, 'This is a message with bold, just a tester.')
-                done(err)
-            })
+            const { text } = await templates.render('no_text_file_alternative.html', {})
+            assert.equal(text, 'This is a message with bold, just a tester.')
         })
 
-        it('should respect disabling HTML-to-text', function(done) {
-            var templates = new EmailTemplates({
+        it('should respect disabling HTML-to-text', async function() {
+            const templates = new EmailTemplates({
                 root: 'test/templates/',
                 text: false
             })
 
-            templates.render('text_file_alternative.html', null, function(err, html, text) {
-                assert.equal(text, null)
-                done(err)
-            })
+            const { text } = await templates.render('no_text_file_alternative.html', {})
+            assert.equal(text, null)
         })
     })
 

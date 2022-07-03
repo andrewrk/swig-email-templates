@@ -44,20 +44,15 @@ var context = {
   meatballCount: 9001
 };
 
-templates.render('meatball-sandwich.html', context, function(err, html, text, subject) {
-
-  // Send email
-  transporter.sendMail({
-      from: 'sender@address',
-      to: 'receiver@address',
-      subject: subject,
-      html: html,
-      text: text
-  });
-
+const { html, text, subject } = await templates.render('meatball-sandwich.html', context) 
+transporter.sendMail({
+    from: 'sender@address',
+    to: 'receiver@address',
+    subject: subject,
+    html: html,
+    text: text
 });
 ```
-
 
 ## EmailTemplates API
 
@@ -130,15 +125,30 @@ new EmailTemplates({
 })
 ```
 
-### render(templateName, context, callback)
+### render(templateName, context, callback?)
 
-Render a template with templateName, with the context provided.  Callback takes three parameters: (error, html, text, subject).
+Render a template with templateName, with the context provided.
 
-Example:
+If no callback is given, returns a promise which resolves to an object that looks like `{ html, text, subject }`.
+
+If a callback function is given, use legacy callback style.  The callback has the signature `function(err, html, text, subject)`.
+
+Example (promise):
 
 ```js
-var EmailTemplates = require('swig-email-templates');
-var templates = new EmailTemplates();
+const EmailTemplates = require('swig-email-templates');
+const templates = new EmailTemplates();
+const { html, text, subject } = await templates.render('template.html', { user: 55 })
+// html is inlined html
+// text is text equivalent
+// subject is parsed subject template or null if not found
+```
+
+Example (callback):
+
+```js
+const EmailTemplates = require('swig-email-templates');
+const templates = new EmailTemplates();
 templates.render('template.html', { user: 55 }, function (err, html, text, subject) {
   // html is inlined html
   // text is text equivalent

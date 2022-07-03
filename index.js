@@ -101,7 +101,7 @@ class EmailTemplates {
     /** Render a template given 'templateName' and context 'context' */
     render(templateName, context = {}, cb) {
         if (!cb) {
-            this._renderPromise(templateName, context)
+            return this._renderPromise(templateName, context)
         } else {
             this._renderPromise(templateName, context)
                 .then(({ html, text, subject }) => cb(null, html, text, subject))
